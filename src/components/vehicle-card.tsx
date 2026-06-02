@@ -2,33 +2,42 @@ import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-import type { Vehicle, VehicleCondition } from "@/types/vehicle";
+import type { VehicleWithImages } from "@/types/vehicle";
 import { cn } from "@/lib/utils";
 import { formatCLP, formatKm } from "@/lib/format";
 import { Badge, type BadgeProps } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 
 interface VehicleCardProps {
-  vehicle: Vehicle;
+  vehicle: VehicleWithImages;
   className?: string;
 }
 
-/** Mapea la condición del vehículo a la variante y etiqueta del badge. */
-const conditionBadge: Record<
-  VehicleCondition,
-  { variant: NonNullable<BadgeProps["variant"]>; label: string }
-> = {
-  nuevo: { variant: "nuevo", label: "Nuevo" },
-  usado: { variant: "financiable", label: "Usado" },
-  oportunidad: { variant: "oportunidad", label: "Oportunidad" },
-  vendido: { variant: "vendido", label: "Vendido" },
-};
-
 export function VehicleCard({ vehicle, className }: VehicleCardProps) {
-  const { slug, marca, modelo, anio, km, precio, condicion, foto, financiable } =
-    vehicle;
-  const badge = conditionBadge[condicion];
-  const isSold = condicion === "vendido";
+  const {
+    slug,
+    marca,
+    modelo,
+    version,
+    anio,
+    kilometraje,
+    precio,
+    condicion,
+    destacado,
+    vendido,
+    imagenes,
+  } = vehicle;
+
+  const principal = imagenes.find((img) => img.es_principal) ?? imagenes[0];
+  const foto = principal?.url;
+
+  // Badge de estado: si está vendido prima sobre la condición.
+  const estado: { variant: NonNullable<BadgeProps["variant"]>; label: string } =
+    vendido
+      ? { variant: "vendido", label: "Vendido" }
+      : condicion === "nuevo"
+        ? { variant: "nuevo", label: "Nuevo" }
+        : { variant: "financiable", label: "Usado" };
 
   return (
     <article
@@ -39,20 +48,26 @@ export function VehicleCard({ vehicle, className }: VehicleCardProps) {
     >
       {/* Imagen 16:9 */}
       <div className="relative aspect-video w-full overflow-hidden bg-muted">
-        <Image
-          src={foto}
-          alt={`${marca} ${modelo} ${anio}`}
-          fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className={cn(
-            "object-cover transition-transform duration-500 group-hover:scale-105",
-            isSold && "opacity-60 grayscale"
-          )}
-        />
+        {foto ? (
+          <Image
+            src={foto}
+            alt={`${marca} ${modelo} ${anio}`}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className={cn(
+              "object-cover transition-transform duration-500 group-hover:scale-105",
+              vendido && "opacity-60 grayscale"
+            )}
+          />
+        ) : (
+          <div className="flex h-full w-full items-center justify-center text-sm text-muted-foreground">
+            Sin imagen
+          </div>
+        )}
         <div className="absolute left-3 top-3 flex flex-wrap gap-2">
-          <Badge variant={badge.variant}>{badge.label}</Badge>
-          {financiable && !isSold ? (
-            <Badge variant="financiable">Financiable</Badge>
+          <Badge variant={estado.variant}>{estado.label}</Badge>
+          {destacado && !vendido ? (
+            <Badge variant="oportunidad">Destacado</Badge>
           ) : null}
         </div>
       </div>
@@ -65,9 +80,10 @@ export function VehicleCard({ vehicle, className }: VehicleCardProps) {
           </p>
           <h3 className="font-display text-lg font-semibold leading-tight text-foreground">
             {modelo}
+            {version ? ` ${version}` : ""}
           </h3>
           <p className="text-sm text-muted-foreground">
-            {anio} · {formatKm(km)}
+            {anio} · {formatKm(kilometraje)}
           </p>
         </div>
 
@@ -84,7 +100,7 @@ export function VehicleCard({ vehicle, className }: VehicleCardProps) {
               buttonVariants({ variant: "default", size: "sm" }),
               "shrink-0"
             )}
-            aria-disabled={isSold}
+            aria-disabled={vendido}
           >
             Ver detalle
           </Link>

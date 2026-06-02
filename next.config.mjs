@@ -1,13 +1,11 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    // Permite servir imágenes remotas (fotos de vehículos) por https.
-    // Ajusta los hosts a los reales (p. ej. el bucket de Supabase Storage).
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "**",
-      },
+      // Imágenes de ejemplo del seed.
+      { protocol: "https", hostname: "images.unsplash.com" },
+      // Fotos reales servidas desde Supabase Storage (bucket vehicle-photos).
+      { protocol: "https", hostname: "*.supabase.co" },
     ],
   },
 };
