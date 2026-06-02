@@ -1,0 +1,73 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/*
+  Paleta Trench Motors — premium-deportivo y metálico (cromo/plata sobre negro,
+  con acento rojo). El sitio es oscuro por defecto: por eso :root y .dark usan
+  los mismos valores y se evita cualquier destello en modo claro.
+*/
+@layer base {
+  :root {
+    --background: 240 8% 5%;
+    --foreground: 240 10% 96%;
+    --card: 225 9% 9%;
+    --card-foreground: 240 10% 96%;
+    --popover: 225 9% 9%;
+    --popover-foreground: 240 10% 96%;
+    --primary: 357 75% 48%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 225 9% 9%;
+    --secondary-foreground: 240 10% 96%;
+    --muted: 225 9% 9%;
+    --muted-foreground: 220 4% 56%;
+    --accent: 225 9% 9%;
+    --accent-foreground: 240 10% 96%;
+    --destructive: 0 72% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 223 8% 18%;
+    --input: 223 8% 18%;
+    --ring: 357 75% 48%;
+    /* Marca: plateado/cromo */
+    --silver: 228 5% 80%;
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: 240 8% 5%;
+    --foreground: 240 10% 96%;
+    --card: 225 9% 9%;
+    --card-foreground: 240 10% 96%;
+    --popover: 225 9% 9%;
+    --popover-foreground: 240 10% 96%;
+    --primary: 357 75% 48%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 225 9% 9%;
+    --secondary-foreground: 240 10% 96%;
+    --muted: 225 9% 9%;
+    --muted-foreground: 220 4% 56%;
+    --accent: 225 9% 9%;
+    --accent-foreground: 240 10% 96%;
+    --destructive: 0 72% 45%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 223 8% 18%;
+    --input: 223 8% 18%;
+    --ring: 357 75% 48%;
+    --silver: 228 5% 80%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground font-sans;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
