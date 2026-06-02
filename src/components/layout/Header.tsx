@@ -53,7 +53,7 @@ export function Header({ variant = "transparent" }: HeaderProps) {
     >
       <Container className="flex h-16 items-center justify-between gap-4 sm:h-20">
         <Link href="/" aria-label="Trench Motors — Inicio" className="shrink-0">
-          <Logo showSubtitle={false} />
+          <Logo variant="horizontal" />
         </Link>
 
         {/* Navegación (desktop) */}
@@ -119,7 +119,7 @@ export function Header({ variant = "transparent" }: HeaderProps) {
           )}
         >
           <div className="flex items-center justify-between border-b border-border px-5 py-4">
-            <Logo showSubtitle={false} />
+            <Logo variant="horizontal" />
             <button
               type="button"
               onClick={() => setOpen(false)}

@@ -53,7 +53,7 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {/* Marca + navegación */}
           <div className="flex flex-col gap-4">
-            <Logo />
+            <Logo className="h-28" />
             <nav className="flex flex-col gap-2">
               {navLinks.map((link) => (
                 <Link
