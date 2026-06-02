@@ -7,6 +7,7 @@ import { Menu, X, Phone } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Container } from "@/components/container";
+import { Logo } from "@/components/logo";
 import { navLinks, siteConfig } from "@/lib/site";
 
 type HeaderVariant = "transparent" | "solid";
@@ -17,16 +18,6 @@ interface HeaderProps {
    * hacer scroll. "solid": siempre sólido.
    */
   variant?: HeaderVariant;
-}
-
-function Wordmark() {
-  // Cuando exista el logo, reemplazar por:
-  // <Image src="/logo-trench.png" alt="Trench Motors" width={160} height={32} priority />
-  return (
-    <span className="font-display text-xl font-extrabold uppercase tracking-[0.15em] text-foreground">
-      Trench<span className="text-primary"> Motors</span>
-    </span>
-  );
 }
 
 export function Header({ variant = "transparent" }: HeaderProps) {
@@ -62,7 +53,7 @@ export function Header({ variant = "transparent" }: HeaderProps) {
     >
       <Container className="flex h-16 items-center justify-between gap-4 sm:h-20">
         <Link href="/" aria-label="Trench Motors — Inicio" className="shrink-0">
-          <Wordmark />
+          <Logo showSubtitle={false} />
         </Link>
 
         {/* Navegación (desktop) */}
@@ -128,7 +119,7 @@ export function Header({ variant = "transparent" }: HeaderProps) {
           )}
         >
           <div className="flex items-center justify-between border-b border-border px-5 py-4">
-            <Wordmark />
+            <Logo showSubtitle={false} />
             <button
               type="button"
               onClick={() => setOpen(false)}

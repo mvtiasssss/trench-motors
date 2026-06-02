@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Phone, MessageCircle, Mail, Clock } from "lucide-react";
 
 import { Container } from "@/components/container";
+import { Logo } from "@/components/logo";
 import { navLinks, siteConfig } from "@/lib/site";
 
 // lucide-react v1 ya no incluye logos de marca; usamos SVG inline.
@@ -52,9 +53,7 @@ export function Footer() {
         <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
           {/* Marca + navegación */}
           <div className="flex flex-col gap-4">
-            <span className="font-display text-lg font-extrabold uppercase tracking-[0.15em]">
-              Trench<span className="text-primary"> Motors</span>
-            </span>
+            <Logo />
             <nav className="flex flex-col gap-2">
               {navLinks.map((link) => (
                 <Link
