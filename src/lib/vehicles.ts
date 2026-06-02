@@ -1,7 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import type {
   Brand,
-  Vehicle,
   VehicleCondition,
   VehicleType,
   VehicleWithImages,
@@ -33,7 +32,7 @@ export interface VehicleFilters {
 
 /** Resultado paginado del catálogo. */
 export interface VehiclesResult {
-  data: Vehicle[];
+  data: VehicleWithImages[];
   total: number;
 }
 
@@ -72,7 +71,9 @@ export async function getVehicles(
   } = filtros;
 
   const supabase = createClient();
-  let query = supabase.from("vehicles").select("*", { count: "exact" });
+  let query = supabase
+    .from("vehicles")
+    .select(VEHICLE_WITH_IMAGES, { count: "exact" });
 
   if (!incluirVendidos) query = query.eq("vendido", false);
   if (marca) query = query.eq("marca", marca);
@@ -107,7 +108,32 @@ export async function getVehicles(
   const { data, error, count } = await query;
   if (error) throw error;
 
-  return { data: (data ?? []) as Vehicle[], total: count ?? 0 };
+  const vehiculos = ((data ?? []) as VehicleWithImages[]).map(ordenarImagenes);
+  return { data: vehiculos, total: count ?? 0 };
+}
+
+/**
+ * Vehículos similares (misma marca o mismo tipo), no vendidos, excluyendo el
+ * vehículo dado. Útil para la sección "Vehículos similares" del detalle.
+ */
+export async function getSimilarVehicles(
+  vehiculo: Pick<VehicleWithImages, "id" | "marca" | "tipo">,
+  limit = 4
+): Promise<VehicleWithImages[]> {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("vehicles")
+    .select(VEHICLE_WITH_IMAGES)
+    .neq("id", vehiculo.id)
+    .eq("vendido", false)
+    .or(`marca.eq.${vehiculo.marca},tipo.eq.${vehiculo.tipo}`)
+    .order("destacado", { ascending: false })
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  if (error) throw error;
+
+  return ((data ?? []) as VehicleWithImages[]).map(ordenarImagenes);
 }
 
 /** Obtiene un vehículo por slug junto con sus imágenes, o null si no existe. */

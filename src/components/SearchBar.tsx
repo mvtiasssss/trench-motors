@@ -7,15 +7,7 @@ import { Search } from "lucide-react";
 import type { Brand } from "@/types/vehicle";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-
-const TIPOS = [
-  { value: "sedan", label: "Sedán" },
-  { value: "suv", label: "SUV" },
-  { value: "pickup", label: "Camioneta" },
-  { value: "hatchback", label: "Hatchback" },
-  { value: "coupe", label: "Coupé" },
-  { value: "furgon", label: "Furgón" },
-];
+import { TIPOS } from "@/lib/vehicle-options";
 
 interface SearchBarProps {
   brands: Brand[];
