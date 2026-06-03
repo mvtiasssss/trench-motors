@@ -43,9 +43,9 @@ export const metadata: Metadata = {
     url: siteConfig.url,
     images: [
       {
-        url: "/logo-trench.svg",
-        width: 240,
-        height: 268,
+        url: "/logo-trench.jpg",
+        width: 701,
+        height: 632,
         alt: `${siteConfig.nombre} — Logo`,
       },
     ],

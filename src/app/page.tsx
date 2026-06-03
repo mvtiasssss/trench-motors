@@ -1,18 +1,14 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ShieldCheck, Banknote, Wrench, Handshake, Star } from "lucide-react";
 
 import { Container } from "@/components/container";
 import { SectionHeading } from "@/components/section-heading";
 import { VehicleCard } from "@/components/vehicle-card";
-import { WhatsAppButton } from "@/components/whatsapp-button";
 import { SearchBar } from "@/components/SearchBar";
+import { HomeHero } from "@/components/HomeHero";
 import { Button } from "@/components/ui/button";
 import { getBrands, getFeaturedVehicles } from "@/lib/vehicles";
 import type { Brand, VehicleWithImages } from "@/types/vehicle";
-
-const HERO_IMAGE =
-  "https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=2000&q=80";
 
 const beneficios = [
   {
@@ -74,52 +70,8 @@ export default async function Home() {
 
   return (
     <>
-      {/* ============================= HERO ============================= */}
-      <section className="relative flex min-h-screen items-center overflow-hidden">
-        <Image
-          src={HERO_IMAGE}
-          alt="Auto deportivo en Trench Motors"
-          fill
-          priority
-          sizes="100vw"
-          className="object-cover"
-        />
-        {/* Overlays oscuros */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/85 to-background/40" />
-        <div className="absolute inset-0 bg-black/40" />
-
-        <Container className="relative z-10 pb-32 pt-28">
-          <div className="max-w-3xl">
-            <h1
-              className="animate-fade-up font-display text-4xl font-extrabold uppercase leading-[1.05] tracking-tight text-foreground sm:text-6xl md:text-7xl"
-              style={{ animationDelay: "0.05s" }}
-            >
-              Tu próximo auto, sin rodeos.
-            </h1>
-            <p
-              className="animate-fade-up mt-6 max-w-xl text-lg text-foreground/80 sm:text-xl"
-              style={{ animationDelay: "0.2s" }}
-            >
-              Trench Motors — vehículos nuevos y usados con financiamiento a tu
-              medida
-            </p>
-            <div
-              className="animate-fade-up mt-8 flex flex-col gap-4 sm:flex-row"
-              style={{ animationDelay: "0.35s" }}
-            >
-              <Button asChild size="lg">
-                <Link href="/catalogo">Ver Catálogo</Link>
-              </Button>
-              <WhatsAppButton
-                variant="outline"
-                size="lg"
-                label="Cotizar por WhatsApp"
-                message="Hola Trench Motors, quiero información sobre sus vehículos"
-              />
-            </div>
-          </div>
-        </Container>
-      </section>
+      {/* ===================== HERO + INTRO DE MARCA ==================== */}
+      <HomeHero />
 
       {/* ===================== BÚSQUEDA RÁPIDA ========================== */}
       <Container className="relative z-20 -mt-24">
