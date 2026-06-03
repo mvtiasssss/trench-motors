@@ -25,6 +25,7 @@ import { QuoteForm } from "@/components/vehicle/QuoteForm";
 import { getSimilarVehicles, getVehicleBySlug } from "@/lib/vehicles";
 import { formatCLP, formatKm } from "@/lib/format";
 import { TIPOS } from "@/lib/vehicle-options";
+import { siteConfig } from "@/lib/site";
 import type { VehicleWithImages } from "@/types/vehicle";
 
 const transmisionLabel: Record<string, string> = {
@@ -50,6 +51,48 @@ function fotoPrincipal(vehicle: VehicleWithImages): string | undefined {
   return (
     vehicle.imagenes.find((img) => img.es_principal) ?? vehicle.imagenes[0]
   )?.url;
+}
+
+function buildJsonLd(vehicle: VehicleWithImages) {
+  const foto = fotoPrincipal(vehicle);
+  const url = `${siteConfig.url}/vehiculo/${vehicle.slug}`;
+
+  const organization = {
+    "@type": "AutoDealer",
+    "@id": siteConfig.url,
+    name: siteConfig.nombre,
+    url: siteConfig.url,
+    telephone: siteConfig.telefono,
+    email: siteConfig.email,
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: siteConfig.direccion,
+      addressCountry: "CL",
+    },
+  };
+
+  const product = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: `${vehicle.marca} ${vehicle.modelo}${vehicle.version ? ` ${vehicle.version}` : ""}`,
+    description:
+      vehicle.descripcion ??
+      `${vehicle.marca} ${vehicle.modelo} ${vehicle.anio} disponible en Trench Motors.`,
+    url,
+    ...(foto ? { image: foto } : {}),
+    offers: {
+      "@type": "Offer",
+      priceCurrency: "CLP",
+      price: vehicle.precio,
+      availability: vehicle.vendido
+        ? "https://schema.org/SoldOut"
+        : "https://schema.org/InStock",
+      seller: organization,
+      url,
+    },
+  };
+
+  return JSON.stringify(product);
 }
 
 export async function generateMetadata({
@@ -139,6 +182,10 @@ export default async function VehiculoPage({
 
   return (
     <Container className="pb-16 pt-28">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: buildJsonLd(vehicle) }}
+      />
       <Link
         href="/catalogo"
         className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"

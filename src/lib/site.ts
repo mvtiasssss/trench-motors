@@ -1,19 +1,19 @@
 /**
  * Configuración central de Trench Motors: datos de contacto, navegación y redes.
- * Estos valores son provisionales; reemplázalos por los reales cuando estén.
  */
 export const siteConfig = {
   nombre: "Trench Motors",
-  telefono: "+56 9 1234 5678",
-  telefonoHref: "tel:+56912345678",
-  // Número en formato internacional sin "+" ni espacios, para enlaces wa.me
-  whatsapp: "56912345678",
-  email: "contacto@trenchmotors.cl",
-  direccion: "Av. Las Condes 1234, Santiago, Chile",
+  slogan: "Autos nuevos y usados en Santiago",
+  descripcion:
+    "Compra vehículos nuevos y usados con financiamiento a tu medida. 15 años de experiencia. Confianza, garantía y atención cercana.",
+  url: "https://trenchmotors.cl",
+  telefono: "+56 9 9784 6740",
+  telefonoHref: "tel:+56997846740",
+  whatsapp: "56997846740",
+  email: "matiastrenchcorreo@gmail.com",
+  direccion: "El Acueducto 2945, Santiago",
   horarios: [
-    { dias: "Lunes a Viernes", horas: "09:00 – 19:00" },
-    { dias: "Sábado", horas: "10:00 – 14:00" },
-    { dias: "Domingo y festivos", horas: "Cerrado" },
+    { dias: "Lunes a Domingo", horas: "24/7" },
   ],
   redes: {
     instagram: "https://instagram.com/trenchmotors",
