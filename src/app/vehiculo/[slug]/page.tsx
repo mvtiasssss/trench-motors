@@ -19,6 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { VehicleCard } from "@/components/vehicle-card";
 import { WhatsAppButton } from "@/components/whatsapp-button";
+import { SimuladorCuota } from "@/components/SimuladorCuota";
 import { Gallery } from "@/components/vehicle/Gallery";
 import { QuoteForm } from "@/components/vehicle/QuoteForm";
 import { getSimilarVehicles, getVehicleBySlug } from "@/lib/vehicles";
@@ -220,6 +221,9 @@ export default async function VehiculoPage({
               label="Consultar por WhatsApp"
               message={mensajeWhatsApp}
             />
+
+            {/* Simulador de cuota con el precio del vehículo */}
+            <SimuladorCuota precio={precio} compact className="bg-background" />
           </div>
         </aside>
       </div>

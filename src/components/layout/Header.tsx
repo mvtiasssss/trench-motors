@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Menu, X, Phone } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -15,22 +16,27 @@ type HeaderVariant = "transparent" | "solid";
 interface HeaderProps {
   /**
    * "transparent": arranca transparente sobre el hero y se vuelve sólido al
-   * hacer scroll. "solid": siempre sólido.
+   * hacer scroll. "solid": siempre sólido. Si no se especifica, se usa
+   * transparente solo en la home y sólido en el resto de las páginas.
    */
   variant?: HeaderVariant;
 }
 
-export function Header({ variant = "transparent" }: HeaderProps) {
+export function Header({ variant }: HeaderProps) {
+  const pathname = usePathname();
+  const effectiveVariant: HeaderVariant =
+    variant ?? (pathname === "/" ? "transparent" : "solid");
+
   const [scrolled, setScrolled] = React.useState(false);
   const [open, setOpen] = React.useState(false);
 
   React.useEffect(() => {
-    if (variant === "solid") return;
+    if (effectiveVariant === "solid") return;
     const onScroll = () => setScrolled(window.scrollY > 40);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, [variant]);
+  }, [effectiveVariant]);
 
   // Bloquea el scroll del body cuando el menú móvil está abierto.
   React.useEffect(() => {
@@ -40,7 +46,7 @@ export function Header({ variant = "transparent" }: HeaderProps) {
     };
   }, [open]);
 
-  const isSolid = variant === "solid" || scrolled;
+  const isSolid = effectiveVariant === "solid" || scrolled;
 
   return (
     <header

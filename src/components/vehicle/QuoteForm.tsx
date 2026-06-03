@@ -16,19 +16,29 @@ const schema = z.object({
   email: z.string().email("Ingresa un correo electrónico válido."),
   mensaje: z.string().min(1, "Escribe un mensaje."),
   // Campos ocultos
-  vehicle_id: z.string(),
-  origen: z.literal("cotizacion"),
+  vehicle_id: z.string().optional(),
+  origen: z.enum(["cotizacion", "precalificacion"]),
 });
 
 type FormValues = z.infer<typeof schema>;
 
 interface QuoteFormProps {
-  vehicleId: string;
-  /** Mensaje prellenado (incluye marca/modelo/año del vehículo). */
-  defaultMensaje: string;
+  /** Vehículo asociado (solo para cotizaciones). */
+  vehicleId?: string;
+  /** Tipo de lead que genera el formulario. */
+  origen?: "cotizacion" | "precalificacion";
+  /** Mensaje prellenado. */
+  defaultMensaje?: string;
+  /** Texto del botón de envío. */
+  submitLabel?: string;
 }
 
-export function QuoteForm({ vehicleId, defaultMensaje }: QuoteFormProps) {
+export function QuoteForm({
+  vehicleId,
+  origen = "cotizacion",
+  defaultMensaje = "",
+  submitLabel,
+}: QuoteFormProps) {
   const [enviado, setEnviado] = React.useState(false);
 
   const {
@@ -42,8 +52,8 @@ export function QuoteForm({ vehicleId, defaultMensaje }: QuoteFormProps) {
       telefono: "",
       email: "",
       mensaje: defaultMensaje,
-      vehicle_id: vehicleId,
-      origen: "cotizacion",
+      vehicle_id: vehicleId ?? "",
+      origen,
     },
   });
 
@@ -131,7 +141,10 @@ export function QuoteForm({ vehicleId, defaultMensaje }: QuoteFormProps) {
       </div>
 
       <Button type="submit" size="lg" disabled={isSubmitting} className="sm:self-start">
-        Enviar cotización
+        {submitLabel ??
+          (origen === "precalificacion"
+            ? "Solicitar precalificación"
+            : "Enviar cotización")}
       </Button>
     </form>
   );
