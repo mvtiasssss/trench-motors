@@ -153,6 +153,23 @@ export async function getVehicleBySlug(
   return ordenarImagenes(data as VehicleWithImages);
 }
 
+/** Obtiene un vehículo por id junto con sus imágenes, o null si no existe. */
+export async function getVehicleById(
+  id: string
+): Promise<VehicleWithImages | null> {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("vehicles")
+    .select(VEHICLE_WITH_IMAGES)
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error) throw error;
+  if (!data) return null;
+
+  return ordenarImagenes(data as VehicleWithImages);
+}
+
 /** Vehículos destacados (no vendidos), con sus imágenes. */
 export async function getFeaturedVehicles(
   limit = 6

@@ -15,6 +15,18 @@ export const CONDICIONES = [
   { value: "usado", label: "Usado" },
 ] as const;
 
+export const TRANSMISIONES = [
+  { value: "manual", label: "Manual" },
+  { value: "automatica", label: "Automática" },
+] as const;
+
+export const COMBUSTIBLES = [
+  { value: "bencina", label: "Bencina" },
+  { value: "diesel", label: "Diésel" },
+  { value: "hibrido", label: "Híbrido" },
+  { value: "electrico", label: "Eléctrico" },
+] as const;
+
 export const ORDENES = [
   { value: "recientes", label: "Más recientes" },
   { value: "precio_asc", label: "Menor precio" },

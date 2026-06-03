@@ -48,6 +48,9 @@ export function Header({ variant }: HeaderProps) {
 
   const isSolid = effectiveVariant === "solid" || scrolled;
 
+  // El panel de administración no usa el chrome público.
+  if (pathname?.startsWith("/admin")) return null;
+
   return (
     <header
       className={cn(

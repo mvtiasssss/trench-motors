@@ -1,5 +1,8 @@
+"use client";
+
 import * as React from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Phone, MessageCircle, Mail, Clock } from "lucide-react";
 
 import { Container } from "@/components/container";
@@ -44,8 +47,12 @@ function FacebookIcon(props: React.SVGProps<SVGSVGElement>) {
 }
 
 export function Footer() {
+  const pathname = usePathname();
   const year = new Date().getFullYear();
   const whatsappHref = `https://wa.me/${siteConfig.whatsapp}`;
+
+  // El panel de administración no usa el chrome público.
+  if (pathname?.startsWith("/admin")) return null;
 
   return (
     <footer className="border-t border-border bg-card text-card-foreground">
