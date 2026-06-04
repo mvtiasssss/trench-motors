@@ -22,6 +22,7 @@ import { WhatsAppButton } from "@/components/whatsapp-button";
 import { SimuladorCuota } from "@/components/SimuladorCuota";
 import { Gallery } from "@/components/vehicle/Gallery";
 import { QuoteForm } from "@/components/vehicle/QuoteForm";
+import { ShareButton } from "@/components/vehicle/ShareButton";
 import { getSimilarVehicles, getVehicleBySlug } from "@/lib/vehicles";
 import { formatCLP, formatKm } from "@/lib/format";
 import { TIPOS } from "@/lib/vehicle-options";
@@ -109,16 +110,47 @@ export async function generateMetadata({
   if (!vehicle) {
     return { title: "Vehículo no encontrado | Trench Motors" };
   }
-  const titulo = `${vehicle.marca} ${vehicle.modelo} ${vehicle.anio} | Trench Motors`;
+
+  // Título de la pestaña (con sufijo de marca vía template del layout)
+  const titulo = `${vehicle.marca} ${vehicle.modelo} ${vehicle.anio}`;
+  // Título enriquecido para compartir (incluye el precio, lo que más importa)
+  const tituloSocial = `${vehicle.marca} ${vehicle.modelo} ${vehicle.anio} — ${formatCLP(
+    vehicle.precio
+  )}`;
+
+  // Descripción con specs clave (lo que se ve en la tarjeta de WhatsApp)
+  const specsClave = [
+    formatKm(vehicle.kilometraje),
+    transmisionLabel[vehicle.transmision] ?? vehicle.transmision,
+    combustibleLabel[vehicle.combustible] ?? vehicle.combustible,
+    tipoLabel(vehicle.tipo),
+  ].join(" · ");
+  const descripcion =
+    vehicle.descripcion ??
+    `${vehicle.marca} ${vehicle.modelo} ${vehicle.anio} en Trench Motors. ${specsClave}.`;
+
   const foto = fotoPrincipal(vehicle);
+  const url = `${siteConfig.url}/vehiculo/${vehicle.slug}`;
+
   return {
     title: titulo,
-    description:
-      vehicle.descripcion ??
-      `${vehicle.marca} ${vehicle.modelo} ${vehicle.anio} disponible en Trench Motors.`,
+    description: descripcion,
+    alternates: { canonical: url },
     openGraph: {
-      title: titulo,
-      images: foto ? [{ url: foto }] : [],
+      type: "website",
+      url,
+      siteName: siteConfig.nombre,
+      title: tituloSocial,
+      description: descripcion,
+      images: foto
+        ? [{ url: foto, width: 1200, height: 630, alt: tituloSocial }]
+        : [],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: tituloSocial,
+      description: descripcion,
+      images: foto ? [foto] : [],
     },
   };
 }
@@ -267,6 +299,11 @@ export default async function VehiculoPage({
               size="lg"
               label="Consultar por WhatsApp"
               message={mensajeWhatsApp}
+            />
+            <ShareButton
+              title={`${marca} ${modelo} ${anio} — ${formatCLP(precio)}`}
+              text={`Mira este ${marca} ${modelo} ${anio} en Trench Motors`}
+              url={`${siteConfig.url}/vehiculo/${vehicle.slug}`}
             />
 
             {/* Simulador de cuota con el precio del vehículo */}
