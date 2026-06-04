@@ -9,6 +9,7 @@ import { cuotaDesde } from "@/lib/finance";
 import { BLUR_DATA_URL } from "@/lib/image";
 import { Badge, type BadgeProps } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
+import { CompareToggle } from "@/components/compare/CompareToggle";
 
 interface VehicleCardProps {
   vehicle: VehicleWithImages;
@@ -77,6 +78,11 @@ export function VehicleCard({ vehicle, className }: VehicleCardProps) {
             <Badge variant="oportunidad">Destacado</Badge>
           ) : null}
         </div>
+        {!vendido ? (
+          <div className="absolute right-3 top-3">
+            <CompareToggle vehicle={vehicle} />
+          </div>
+        ) : null}
       </div>
 
       {/* Contenido */}

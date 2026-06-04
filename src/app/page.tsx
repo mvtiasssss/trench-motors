@@ -8,6 +8,7 @@ import { VehicleCard } from "@/components/vehicle-card";
 import { SearchBar } from "@/components/SearchBar";
 import { HomeHero } from "@/components/HomeHero";
 import { Garantias } from "@/components/garantias";
+import { RecentlyViewed } from "@/components/recent/RecentlyViewed";
 import { Button } from "@/components/ui/button";
 import { getBrands, getFeaturedVehicles } from "@/lib/vehicles";
 import { BLUR_DATA_URL } from "@/lib/image";
@@ -147,6 +148,9 @@ export default async function Home() {
           </div>
         </Container>
       </section>
+
+      {/* ==================== VISTOS RECIENTEMENTE ===================== */}
+      <RecentlyViewed />
 
       {/* ======================= CTA FINAL ============================= */}
       <section className="relative overflow-hidden py-24 sm:py-32">

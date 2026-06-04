@@ -6,6 +6,7 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { CompareProvider } from "@/components/compare/CompareProvider";
 import { siteConfig } from "@/lib/site";
 
 // Fuente de texto: Geist (legible) — variable --font-geist-sans
@@ -74,7 +75,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${saira.variable} antialiased`}
       >
         <Header />
-        {children}
+        <CompareProvider>{children}</CompareProvider>
         <Footer />
         {gaId ? <GoogleAnalytics gaId={gaId} /> : null}
       </body>

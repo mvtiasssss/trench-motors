@@ -25,7 +25,9 @@ import { Gallery } from "@/components/vehicle/Gallery";
 import { QuoteForm } from "@/components/vehicle/QuoteForm";
 import { ShareButton } from "@/components/vehicle/ShareButton";
 import { RegisterView } from "@/components/vehicle/RegisterView";
+import { TrackRecentView } from "@/components/recent/TrackRecentView";
 import { Garantias } from "@/components/garantias";
+import { toMiniVehicle } from "@/lib/vehicle-mini";
 import { getSimilarVehicles, getVehicleBySlug } from "@/lib/vehicles";
 import { formatCLP, formatKm } from "@/lib/format";
 import { TIPOS } from "@/lib/vehicle-options";
@@ -224,6 +226,8 @@ export default async function VehiculoPage({
       />
       {/* Suma 1 vista (dedup por cookie httpOnly en /api/views) */}
       <RegisterView slug={vehicle.slug} />
+      {/* Guarda este auto en "vistos recientemente" (localStorage) */}
+      <TrackRecentView item={toMiniVehicle(vehicle)} />
       <Link
         href="/catalogo"
         className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"

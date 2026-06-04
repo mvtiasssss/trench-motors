@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { CatalogFilters } from "@/components/catalog/CatalogFilters";
 import { CatalogSort } from "@/components/catalog/CatalogSort";
 import { CatalogPagination } from "@/components/catalog/CatalogPagination";
+import { RecentlyViewed } from "@/components/recent/RecentlyViewed";
 import { getBrands, getVehicles, type VehicleOrden } from "@/lib/vehicles";
 import type { Brand, VehicleCondition, VehicleType, VehicleWithImages } from "@/types/vehicle";
 import { CONDICIONES, ORDENES, TIPOS } from "@/lib/vehicle-options";
@@ -110,6 +111,7 @@ export default async function CatalogoPage({
   if (orden) linkParams.orden = orden;
 
   return (
+    <>
     <Container className="pb-16 pt-28">
       <div className="flex flex-col gap-2">
         <h1 className="font-display text-3xl font-bold uppercase tracking-tight text-foreground sm:text-4xl">
@@ -165,5 +167,7 @@ export default async function CatalogoPage({
         </div>
       </div>
     </Container>
+    <RecentlyViewed />
+    </>
   );
 }
