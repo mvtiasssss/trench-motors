@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ShieldCheck, Banknote, Wrench, Handshake, Star } from "lucide-react";
 
@@ -184,14 +185,48 @@ export default async function Home() {
       </section>
 
       {/* ======================= CTA FINAL ============================= */}
-      <section className="bg-primary py-16 text-primary-foreground sm:py-20">
-        <Container className="flex flex-col items-center gap-6 text-center">
-          <h2 className="font-display text-3xl font-extrabold uppercase tracking-tight sm:text-4xl">
+      <section className="relative overflow-hidden py-24 sm:py-32">
+        {/* Foto del Mercedes escalada y difuminada — solo compositor (scale+filter) */}
+        <div className="absolute inset-0 scale-110">
+          <Image
+            src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1600&q=60"
+            alt=""
+            fill
+            sizes="100vw"
+            className="object-cover blur-sm"
+            aria-hidden
+          />
+        </div>
+
+        {/* Overlay oscuro degradado */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0B0B0D]/90 via-[#0B0B0D]/80 to-[#0B0B0D]/95" />
+
+        {/* Borde superior plateado muy fino */}
+        <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-silver/60 to-transparent" />
+
+        {/* Contenido */}
+        <Container className="relative z-10 flex flex-col items-center gap-6 text-center">
+          {/* Acento rojo fino sobre el título */}
+          <span className="h-[3px] w-10 rounded-full bg-primary" aria-hidden />
+
+          <h2 className="font-display text-3xl font-extrabold uppercase tracking-tight text-white sm:text-4xl md:text-5xl">
             ¿Listo para estrenar tu próximo auto?
           </h2>
-          <Button asChild size="lg" variant="secondary">
-            <Link href="/contacto">Conversemos</Link>
-          </Button>
+
+          <p className="max-w-md text-base text-white/70 sm:text-lg">
+            Visítanos o escríbenos — estamos disponibles para encontrar el
+            vehículo perfecto para ti.
+          </p>
+
+          <div className="flex flex-col gap-3 sm:flex-row sm:gap-4">
+            <Button asChild size="lg">
+              <Link href="/contacto">Conversemos</Link>
+            </Button>
+            <Button asChild size="lg" variant="outline"
+              className="border-silver/50 text-white hover:border-silver hover:bg-white/10">
+              <Link href="/catalogo">Ver catálogo</Link>
+            </Button>
+          </div>
         </Container>
       </section>
     </>
