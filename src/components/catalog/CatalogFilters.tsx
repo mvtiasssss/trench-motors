@@ -176,6 +176,16 @@ function FilterControls({ brands }: CatalogFiltersProps) {
         />
       </div>
 
+      {/* Cuota mensual máxima (en Chile se compra "por cuota") */}
+      <NumberField
+        id="f-cuota-max"
+        label="Cuota mensual máx. (CLP)"
+        value={get("cuotaMax")}
+        placeholder="Ej: 250.000"
+        step={10000}
+        onCommit={(v) => updateParams({ cuotaMax: v || null })}
+      />
+
       {/* Año */}
       <div className="grid grid-cols-2 gap-3">
         <NumberField

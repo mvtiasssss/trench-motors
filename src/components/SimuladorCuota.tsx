@@ -4,12 +4,19 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 import { formatCLP } from "@/lib/format";
+import {
+  calcCuota,
+  PIE_PORCENTAJE_DEFAULT,
+  PLAZO_MESES_DEFAULT,
+  TASA_ANUAL_DEFAULT,
+} from "@/lib/finance";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 const PLAZOS = [12, 24, 36, 48, 60] as const;
 const PIE_MAX_PCT = 80;
-const TASA_DEFAULT = 14;
+// Tasa anual por defecto en % (la matemática vive en finance.ts).
+const TASA_DEFAULT = TASA_ANUAL_DEFAULT * 100;
 
 interface SimuladorCuotaProps {
   /** Precio del vehículo. Si no viene, el usuario lo ingresa. */
@@ -28,16 +35,18 @@ export function SimuladorCuota({
 }: SimuladorCuotaProps) {
   const [precio, setPrecio] = React.useState<number>(precioProp ?? 0);
   const [pie, setPie] = React.useState<number>(
-    precioProp ? Math.round(precioProp * 0.2) : 0
+    precioProp ? Math.round(precioProp * PIE_PORCENTAJE_DEFAULT) : 0
   );
-  const [plazo, setPlazo] = React.useState<number>(36);
+  // Plazo inicial = plazo por defecto del motor de financiamiento, para que la
+  // cuota mostrada coincida con la "cuota desde" de las tarjetas.
+  const [plazo, setPlazo] = React.useState<number>(PLAZO_MESES_DEFAULT);
   const [tasa, setTasa] = React.useState<number>(TASA_DEFAULT);
 
   // Si cambia el precio recibido por prop, re-sincroniza.
   React.useEffect(() => {
     if (precioProp == null) return;
     setPrecio(precioProp);
-    setPie(Math.round(precioProp * 0.2));
+    setPie(Math.round(precioProp * PIE_PORCENTAJE_DEFAULT));
   }, [precioProp]);
 
   const pieMax = Math.floor(precio * (PIE_MAX_PCT / 100));
@@ -62,21 +71,15 @@ export function SimuladorCuota({
     setTasa(Math.max(0, Number(value) || 0));
   }
 
-  // --- Cálculo (amortización francesa) ---
+  // --- Cálculo (amortización francesa, misma fórmula que finance.ts) ---
   const montoFinanciado = Math.max(0, precio - pie);
-  const i = tasa / 12 / 100;
-  const n = plazo;
-  let cuotaRaw = 0;
-  if (montoFinanciado > 0 && n > 0) {
-    if (i === 0) {
-      cuotaRaw = montoFinanciado / n;
-    } else {
-      const factor = Math.pow(1 + i, n);
-      cuotaRaw = (montoFinanciado * (i * factor)) / (factor - 1);
-    }
-  }
-  const cuota = Math.round(cuotaRaw);
-  const totalAPagar = cuota * n + pie;
+  // calcCuota recibe la tasa anual como fracción; aquí se maneja en %.
+  const cuota = calcCuota(precio, {
+    pie,
+    plazoMeses: plazo,
+    tasaAnual: tasa / 100,
+  });
+  const totalAPagar = cuota * plazo + pie;
 
   return (
     <div

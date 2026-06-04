@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { precioMaxParaCuota } from "@/lib/finance";
 import type {
   Brand,
   VehicleCondition,
@@ -6,10 +7,16 @@ import type {
   VehicleWithImages,
 } from "@/types/vehicle";
 
-/** Criterios de ordenamiento del catálogo. */
+/**
+ * Criterios de ordenamiento del catálogo.
+ * Bajo los supuestos fijos de finance.ts la cuota es monótona en el precio, por
+ * lo que "cuota_asc/desc" se mapea a "precio_asc/desc" (ver getVehicles).
+ */
 export type VehicleOrden =
   | "precio_asc"
   | "precio_desc"
+  | "cuota_asc"
+  | "cuota_desc"
   | "anio_desc"
   | "recientes";
 
@@ -20,6 +27,8 @@ export interface VehicleFilters {
   condicion?: VehicleCondition;
   precioMin?: number;
   precioMax?: number;
+  /** Cuota mensual máxima (CLP). Se convierte a precio máximo equivalente. */
+  cuotaMax?: number;
   anioMin?: number;
   anioMax?: number;
   kmMax?: number;
@@ -61,6 +70,7 @@ export async function getVehicles(
     condicion,
     precioMin,
     precioMax,
+    cuotaMax,
     anioMin,
     anioMax,
     kmMax,
@@ -80,16 +90,31 @@ export async function getVehicles(
   if (tipo) query = query.eq("tipo", tipo);
   if (condicion) query = query.eq("condicion", condicion);
   if (precioMin != null) query = query.gte("precio", precioMin);
-  if (precioMax != null) query = query.lte("precio", precioMax);
   if (anioMin != null) query = query.gte("anio", anioMin);
   if (anioMax != null) query = query.lte("anio", anioMax);
   if (kmMax != null) query = query.lte("kilometraje", kmMax);
 
+  // "Cuota máxima" se traduce a un "precio máximo" equivalente (la cuota es
+  // monótona creciente en el precio bajo los supuestos por defecto). Si también
+  // hay precioMax explícito, se aplica el más restrictivo.
+  const precioMaxPorCuota =
+    cuotaMax != null && cuotaMax > 0 ? precioMaxParaCuota(cuotaMax) : null;
+  const precioMaxEfectivo =
+    precioMax != null && precioMaxPorCuota != null
+      ? Math.min(precioMax, precioMaxPorCuota)
+      : precioMaxPorCuota ?? precioMax;
+  if (precioMaxEfectivo != null) {
+    query = query.lte("precio", precioMaxEfectivo);
+  }
+
   switch (orden) {
+    // La cuota es monótona en el precio → ordenar por cuota == ordenar por precio.
     case "precio_asc":
+    case "cuota_asc":
       query = query.order("precio", { ascending: true });
       break;
     case "precio_desc":
+    case "cuota_desc":
       query = query.order("precio", { ascending: false });
       break;
     case "anio_desc":

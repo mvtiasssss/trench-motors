@@ -31,5 +31,7 @@ export const ORDENES = [
   { value: "recientes", label: "Más recientes" },
   { value: "precio_asc", label: "Menor precio" },
   { value: "precio_desc", label: "Mayor precio" },
+  { value: "cuota_asc", label: "Menor cuota mensual" },
+  { value: "cuota_desc", label: "Mayor cuota mensual" },
   { value: "anio_desc", label: "Año: nuevo a antiguo" },
 ] as const;

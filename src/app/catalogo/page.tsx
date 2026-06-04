@@ -57,6 +57,7 @@ export default async function CatalogoPage({
 
   const precioMin = num(searchParams.precioMin);
   const precioMax = num(searchParams.precioMax);
+  const cuotaMax = num(searchParams.cuotaMax);
   const anioMin = num(searchParams.anioMin);
   const anioMax = num(searchParams.anioMax);
   const kmMax = num(searchParams.kmMax);
@@ -73,6 +74,7 @@ export default async function CatalogoPage({
       condicion,
       precioMin,
       precioMax,
+      cuotaMax,
       anioMin,
       anioMax,
       kmMax,
@@ -101,6 +103,7 @@ export default async function CatalogoPage({
   if (condicion) linkParams.condicion = condicion;
   if (precioMin != null) linkParams.precioMin = String(precioMin);
   if (precioMax != null) linkParams.precioMax = String(precioMax);
+  if (cuotaMax != null) linkParams.cuotaMax = String(cuotaMax);
   if (anioMin != null) linkParams.anioMin = String(anioMin);
   if (anioMax != null) linkParams.anioMax = String(anioMax);
   if (kmMax != null) linkParams.kmMax = String(kmMax);

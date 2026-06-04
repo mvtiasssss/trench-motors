@@ -5,6 +5,7 @@ import Link from "next/link";
 import type { VehicleWithImages } from "@/types/vehicle";
 import { cn } from "@/lib/utils";
 import { formatCLP, formatKm } from "@/lib/format";
+import { cuotaDesde } from "@/lib/finance";
 import { Badge, type BadgeProps } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 
@@ -30,6 +31,9 @@ export function VehicleCard({ vehicle, className }: VehicleCardProps) {
 
   const principal = imagenes.find((img) => img.es_principal) ?? imagenes[0];
   const foto = principal?.url;
+
+  // Cuota estimada con supuestos por defecto (misma fórmula que el simulador).
+  const cuota = cuotaDesde(precio);
 
   // Badge de estado: si está vendido prima sobre la condición.
   const estado: { variant: NonNullable<BadgeProps["variant"]>; label: string } =
@@ -93,6 +97,15 @@ export function VehicleCard({ vehicle, className }: VehicleCardProps) {
             <span className="font-display text-xl font-bold text-foreground">
               {formatCLP(precio)}
             </span>
+            {!vendido && cuota > 0 ? (
+              <span className="mt-0.5 text-xs text-muted-foreground">
+                Cuota desde{" "}
+                <span className="font-medium text-primary">
+                  {formatCLP(cuota)}
+                </span>
+                /mes
+              </span>
+            ) : null}
           </div>
           <Link
             href={`/vehiculo/${slug}`}
