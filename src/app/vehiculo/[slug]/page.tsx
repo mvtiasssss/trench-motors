@@ -11,6 +11,7 @@ import {
   Car,
   Tag,
   ChevronLeft,
+  Eye,
 } from "lucide-react";
 
 import { Container } from "@/components/container";
@@ -23,6 +24,7 @@ import { SimuladorCuota } from "@/components/SimuladorCuota";
 import { Gallery } from "@/components/vehicle/Gallery";
 import { QuoteForm } from "@/components/vehicle/QuoteForm";
 import { ShareButton } from "@/components/vehicle/ShareButton";
+import { RegisterView } from "@/components/vehicle/RegisterView";
 import { Garantias } from "@/components/garantias";
 import { getSimilarVehicles, getVehicleBySlug } from "@/lib/vehicles";
 import { formatCLP, formatKm } from "@/lib/format";
@@ -192,6 +194,7 @@ export default async function VehiculoPage({
     condicion,
     descripcion,
     vendido,
+    vistas,
     imagenes,
   } = vehicle;
 
@@ -219,6 +222,8 @@ export default async function VehiculoPage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: buildJsonLd(vehicle) }}
       />
+      {/* Suma 1 vista (dedup por cookie httpOnly en /api/views) */}
+      <RegisterView slug={vehicle.slug} />
       <Link
         href="/catalogo"
         className="inline-flex items-center gap-1 text-sm text-muted-foreground transition-colors hover:text-foreground"
@@ -299,6 +304,13 @@ export default async function VehiculoPage({
               <p className="font-display text-3xl font-bold text-foreground">
                 {formatCLP(precio)}
               </p>
+              {/* Prueba social honesta: solo si hay suficientes vistas reales */}
+              {vistas >= 10 ? (
+                <p className="mt-1.5 flex items-center gap-1.5 text-xs text-muted-foreground">
+                  <Eye className="size-3.5" aria-hidden />
+                  {vistas} personas han visto este auto
+                </p>
+              ) : null}
             </div>
             <Button asChild size="lg">
               <a href="#cotizar">Cotizar</a>
