@@ -198,6 +198,7 @@ export default async function VehiculoPage({
     descripcion,
     vendido,
     vistas,
+    video_url,
     imagenes,
   } = vehicle;
 
@@ -251,7 +252,11 @@ export default async function VehiculoPage({
             </h1>
           </div>
 
-          <Gallery images={imagenes} alt={`${marca} ${modelo} ${anio}`} />
+          <Gallery
+            images={imagenes}
+            alt={`${marca} ${modelo} ${anio}`}
+            videoUrl={video_url}
+          />
 
           {/* Ficha técnica */}
           <section>
