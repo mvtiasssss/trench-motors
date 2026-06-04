@@ -21,6 +21,11 @@ export const vehicleFieldsSchema = z.object({
   puertas: z.number().int().min(0).max(12).nullable().optional(),
   condicion: z.enum(["nuevo", "usado"]),
   descripcion: z.string().nullable().optional(),
+  // URL de video (YouTube/Vimeo/MP4) o cadena vacía; se normaliza a null en la API.
+  video_url: z
+    .union([z.string().url("URL de video inválida"), z.literal("")])
+    .nullable()
+    .optional(),
   destacado: z.boolean(),
   vendido: z.boolean(),
   slug: z.string().min(1, "Ingresa un slug."),

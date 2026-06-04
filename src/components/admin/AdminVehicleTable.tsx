@@ -3,7 +3,8 @@
 import * as React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Pencil, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Pencil, Trash2, Copy } from "lucide-react";
 
 import type { VehicleWithImages } from "@/types/vehicle";
 import { cn } from "@/lib/utils";
@@ -61,10 +62,54 @@ export function AdminVehicleTable({
 }: {
   vehicles: VehicleWithImages[];
 }) {
+  const router = useRouter();
   const [list, setList] = React.useState(vehicles);
   const [busyId, setBusyId] = React.useState<string | null>(null);
   const [target, setTarget] = React.useState<VehicleWithImages | null>(null);
   const [deleting, setDeleting] = React.useState(false);
+
+  /** Crea una copia del vehículo (sin fotos) y abre su edición. */
+  async function duplicate(v: VehicleWithImages) {
+    setBusyId(v.id);
+    try {
+      const suffix = Date.now().toString(36).slice(-4);
+      const payload = {
+        marca: v.marca,
+        modelo: v.modelo,
+        version: v.version ?? "",
+        anio: v.anio,
+        precio: v.precio,
+        kilometraje: v.kilometraje,
+        tipo: v.tipo,
+        transmision: v.transmision,
+        combustible: v.combustible,
+        color: v.color ?? "",
+        puertas: v.puertas,
+        condicion: v.condicion,
+        descripcion: v.descripcion ?? "",
+        video_url: v.video_url ?? "",
+        destacado: false,
+        vendido: false,
+        slug: `${v.slug}-copia-${suffix}`,
+        imagenes: [],
+      };
+      const res = await fetch("/api/admin/vehicles", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const data = (await res.json().catch(() => null)) as {
+        id?: string;
+      } | null;
+      if (!res.ok || !data?.id) throw new Error();
+      router.push(`/admin/vehiculos/${data.id}/editar?duplicado=1`);
+      router.refresh();
+    } catch {
+      // Mantener la página; el usuario puede reintentar.
+    } finally {
+      setBusyId(null);
+    }
+  }
 
   async function toggle(
     id: string,
@@ -190,7 +235,18 @@ export function AdminVehicleTable({
                       <Button
                         variant="outline"
                         size="sm"
+                        className="gap-1"
+                        disabled={busyId === v.id}
+                        onClick={() => duplicate(v)}
+                      >
+                        <Copy className="size-4" aria-hidden />
+                        Duplicar
+                      </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
                         className="gap-1 text-destructive hover:text-destructive"
+                        disabled={busyId === v.id}
                         onClick={() => setTarget(v)}
                       >
                         <Trash2 className="size-4" aria-hidden />

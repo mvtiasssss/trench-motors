@@ -53,6 +53,7 @@ export async function POST(request: Request) {
       version: fields.version || null,
       color: fields.color || null,
       descripcion: fields.descripcion || null,
+      video_url: fields.video_url || null,
       puertas: fields.puertas ?? null,
     })
     .select("id, slug")

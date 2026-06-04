@@ -2,10 +2,10 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2, Star, Trash2, Upload, GripVertical } from "lucide-react";
+import { Loader2, Star, Trash2, Upload, GripVertical, Info } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { slugify } from "@/lib/slug";
@@ -38,8 +38,19 @@ const labelClass = "text-sm font-medium text-foreground";
 const fieldClass =
   "h-10 w-full rounded-md border border-input bg-background px-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
 
+// Validación de subida de fotos.
+const MAX_IMAGE_BYTES = 8 * 1024 * 1024; // 8 MB
+const ALLOWED_IMAGE_TYPES = [
+  "image/jpeg",
+  "image/png",
+  "image/webp",
+  "image/avif",
+];
+
 export function VehicleForm({ vehicle }: VehicleFormProps) {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const duplicado = searchParams.get("duplicado") === "1";
   const supabase = React.useMemo(() => createClient(), []);
   const isEdit = Boolean(vehicle);
 
@@ -53,6 +64,7 @@ export function VehicleForm({ vehicle }: VehicleFormProps) {
       })) ?? []
   );
   const [submitError, setSubmitError] = React.useState<string | null>(null);
+  const [uploadError, setUploadError] = React.useState<string | null>(null);
   const dragIndex = React.useRef<number | null>(null);
   const slugManual = React.useRef<boolean>(isEdit);
 
@@ -78,6 +90,7 @@ export function VehicleForm({ vehicle }: VehicleFormProps) {
       puertas: vehicle?.puertas ?? 4,
       condicion: vehicle?.condicion ?? "usado",
       descripcion: vehicle?.descripcion ?? "",
+      video_url: vehicle?.video_url ?? "",
       destacado: vehicle?.destacado ?? false,
       vendido: vehicle?.vendido ?? false,
       slug: vehicle?.slug ?? "",
@@ -96,7 +109,19 @@ export function VehicleForm({ vehicle }: VehicleFormProps) {
   const uploading = images.some((i) => i.status === "uploading");
 
   async function uploadFiles(files: FileList) {
+    setUploadError(null);
     for (const file of Array.from(files)) {
+      // Validación de tipo y tamaño antes de subir.
+      if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+        setUploadError(
+          `"${file.name}" no es una imagen válida (usa JPG, PNG, WebP o AVIF).`
+        );
+        continue;
+      }
+      if (file.size > MAX_IMAGE_BYTES) {
+        setUploadError(`"${file.name}" supera el máximo de 8 MB.`);
+        continue;
+      }
       const key =
         typeof crypto !== "undefined" && crypto.randomUUID
           ? crypto.randomUUID()
@@ -194,6 +219,14 @@ export function VehicleForm({ vehicle }: VehicleFormProps) {
 
   return (
     <form onSubmit={handleSubmit(onValid)} className="flex flex-col gap-8" noValidate>
+      {duplicado ? (
+        <p className="flex items-start gap-2 rounded-md border border-primary/40 bg-primary/10 px-3 py-2 text-sm text-foreground">
+          <Info className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
+          Vehículo duplicado. Revisa los datos y agrega las fotos (no se
+          copiaron del original).
+        </p>
+      ) : null}
+
       {/* Datos principales */}
       <section className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <Field label="Marca" error={errors.marca?.message}>
@@ -293,6 +326,18 @@ export function VehicleForm({ vehicle }: VehicleFormProps) {
         <Textarea rows={4} {...register("descripcion")} placeholder="Opcional" />
       </Field>
 
+      {/* Video */}
+      <Field
+        label="URL de video (YouTube, Vimeo o MP4)"
+        error={errors.video_url?.message}
+        hint="Opcional. Se mostrará en la galería pública del vehículo."
+      >
+        <Input
+          {...register("video_url")}
+          placeholder="https://www.youtube.com/watch?v=…"
+        />
+      </Field>
+
       {/* Flags */}
       <section className="flex flex-wrap gap-6">
         <label className="flex items-center gap-2 text-sm text-foreground">
@@ -327,8 +372,13 @@ export function VehicleForm({ vehicle }: VehicleFormProps) {
           </label>
         </div>
         <p className="text-xs text-muted-foreground">
-          Arrastra para reordenar. Marca una como principal (★).
+          Arrastra para reordenar. Marca una como principal (★). JPG, PNG, WebP
+          o AVIF, hasta 8 MB.
         </p>
+
+        {uploadError ? (
+          <p className="text-sm text-destructive">{uploadError}</p>
+        ) : null}
 
         {images.length === 0 ? (
           <div className="rounded-lg border border-dashed border-border p-8 text-center text-sm text-muted-foreground">

@@ -30,6 +30,7 @@ export async function PATCH(
   if ("version" in updates) updates.version = fields.version || null;
   if ("color" in updates) updates.color = fields.color || null;
   if ("descripcion" in updates) updates.descripcion = fields.descripcion || null;
+  if ("video_url" in updates) updates.video_url = fields.video_url || null;
   if ("puertas" in updates) updates.puertas = fields.puertas ?? null;
 
   if (Object.keys(updates).length > 0) {
@@ -54,6 +55,28 @@ export async function PATCH(
 
   // Si se envían imágenes, se reemplazan por completo.
   if (imagenes) {
+    // Limpieza de huérfanos: borra del Storage las fotos que ya no están en la
+    // nueva lista (las que se quitaron al editar).
+    const { data: previas } = await supabase
+      .from("vehicle_images")
+      .select("url")
+      .eq("vehicle_id", params.id);
+
+    const nuevasUrls = new Set(imagenes.map((img) => img.url));
+    const huerfanas = (previas ?? [])
+      .map((row: { url: string }) => row.url)
+      .filter((url) => !nuevasUrls.has(url));
+    const paths = huerfanas
+      .map((url) => storagePathFromPublicUrl(url))
+      .filter((p): p is string => Boolean(p));
+
+    if (paths.length > 0) {
+      const { error: rmError } = await supabase.storage
+        .from(VEHICLE_PHOTOS_BUCKET)
+        .remove(paths);
+      if (rmError) console.error("[admin/vehicles PATCH storage]", rmError);
+    }
+
     await supabase.from("vehicle_images").delete().eq("vehicle_id", params.id);
     if (imagenes.length > 0) {
       const rows = imagenes.map((img) => ({
