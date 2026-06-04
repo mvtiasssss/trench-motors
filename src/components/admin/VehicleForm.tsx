@@ -185,7 +185,7 @@ export function VehicleForm({ vehicle }: VehicleFormProps) {
         setSubmitError(data?.error ?? "No se pudo guardar el vehículo.");
         return;
       }
-      router.push("/admin");
+      router.push("/admin/vehiculos");
       router.refresh();
     } catch {
       setSubmitError("No se pudo guardar el vehículo. Inténtalo nuevamente.");

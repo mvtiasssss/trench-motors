@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Car, Inbox, LogOut } from "lucide-react";
+import { LayoutDashboard, Car, Inbox, LogOut } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -10,8 +10,8 @@ import { Button } from "@/components/ui/button";
 export function AdminSidebar({ userEmail }: { userEmail: string }) {
   const pathname = usePathname();
 
-  const vehiculosActive =
-    pathname === "/admin" || pathname.startsWith("/admin/vehiculos");
+  const dashboardActive = pathname === "/admin";
+  const vehiculosActive = pathname.startsWith("/admin/vehiculos");
   const leadsActive = pathname.startsWith("/admin/leads");
 
   const linkClass = (active: boolean) =>
@@ -32,7 +32,11 @@ export function AdminSidebar({ userEmail }: { userEmail: string }) {
       </Link>
 
       <nav className="flex flex-1 flex-row gap-1 md:flex-col">
-        <Link href="/admin" className={linkClass(vehiculosActive)}>
+        <Link href="/admin" className={linkClass(dashboardActive)}>
+          <LayoutDashboard className="size-4" aria-hidden />
+          Dashboard
+        </Link>
+        <Link href="/admin/vehiculos" className={linkClass(vehiculosActive)}>
           <Car className="size-4" aria-hidden />
           Vehículos
         </Link>
