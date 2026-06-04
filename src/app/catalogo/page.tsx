@@ -8,6 +8,7 @@ import { CatalogFilters } from "@/components/catalog/CatalogFilters";
 import { CatalogSort } from "@/components/catalog/CatalogSort";
 import { CatalogPagination } from "@/components/catalog/CatalogPagination";
 import { RecentlyViewed } from "@/components/recent/RecentlyViewed";
+import { SearchAlert } from "@/components/catalog/SearchAlert";
 import { getBrands, getVehicles, type VehicleOrden } from "@/lib/vehicles";
 import type { Brand, VehicleCondition, VehicleType, VehicleWithImages } from "@/types/vehicle";
 import { CONDICIONES, ORDENES, TIPOS } from "@/lib/vehicle-options";
@@ -110,6 +111,19 @@ export default async function CatalogoPage({
   if (kmMax != null) linkParams.kmMax = String(kmMax);
   if (orden) linkParams.orden = orden;
 
+  // ---- Filtros activos (para la alerta de búsqueda guardada) ----
+  const filtrosActivos: Record<string, string> = {};
+  if (marca) filtrosActivos.marca = marca;
+  if (tipo) filtrosActivos.tipo = tipo;
+  if (condicion) filtrosActivos.condicion = condicion;
+  if (precioMin != null) filtrosActivos.precio_min = String(precioMin);
+  if (precioMax != null) filtrosActivos.precio_max = String(precioMax);
+  if (cuotaMax != null) filtrosActivos.cuota_max = String(cuotaMax);
+  if (anioMin != null) filtrosActivos.anio_min = String(anioMin);
+  if (anioMax != null) filtrosActivos.anio_max = String(anioMax);
+  if (kmMax != null) filtrosActivos.km_max = String(kmMax);
+  const hayFiltros = Object.keys(filtrosActivos).length > 0;
+
   return (
     <>
     <Container className="pb-16 pt-28">
@@ -150,6 +164,9 @@ export default async function CatalogoPage({
                 totalPages={totalPages}
                 params={linkParams}
               />
+              {hayFiltros ? (
+                <SearchAlert filtros={filtrosActivos} className="mt-10" />
+              ) : null}
             </>
           ) : (
             <div className="mt-8 rounded-lg border border-border bg-card p-10 text-center">
@@ -162,6 +179,12 @@ export default async function CatalogoPage({
               <Button asChild variant="outline" className="mt-6">
                 <Link href="/catalogo">Limpiar filtros</Link>
               </Button>
+              <SearchAlert
+                filtros={filtrosActivos}
+                title="Avísame cuando llegue un auto así"
+                description="Déjanos tu correo y te escribimos apenas ingrese un vehículo que calce con tu búsqueda."
+                className="mt-8 text-left"
+              />
             </div>
           )}
         </div>
