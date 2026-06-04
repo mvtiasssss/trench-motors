@@ -10,7 +10,7 @@ export default async function AdminLeadsPage() {
     const { data } = await supabase
       .from("leads")
       .select(
-        "id, created_at, nombre, telefono, email, mensaje, origen, vehiculo:vehicles(marca, modelo, anio)"
+        "id, created_at, updated_at, nombre, telefono, email, mensaje, origen, estado, notas, vehiculo:vehicles(id, marca, modelo, anio)"
       )
       .order("created_at", { ascending: false });
     leads = (data ?? []) as unknown as AdminLead[];

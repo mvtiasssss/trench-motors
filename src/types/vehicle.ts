@@ -26,6 +26,14 @@ export type LeadOrigen =
   | "precalificacion"
   | "agendamiento";
 
+/** Estado de un lead en el pipeline de ventas. */
+export type LeadEstado =
+  | "nuevo"
+  | "contactado"
+  | "negociacion"
+  | "cerrado"
+  | "perdido";
+
 /** Vehículo del catálogo (tabla `vehicles`). */
 export interface Vehicle {
   id: string;
@@ -83,7 +91,12 @@ export interface Lead {
   mensaje: string | null;
   vehicle_id: string | null;
   origen: LeadOrigen;
+  /** Estado en el pipeline (default 'nuevo'). */
+  estado: LeadEstado;
+  /** Notas internas de seguimiento. */
+  notas: string | null;
   created_at: string;
+  updated_at: string;
 }
 
 /** Vehículo junto con sus imágenes (consulta con join). */
