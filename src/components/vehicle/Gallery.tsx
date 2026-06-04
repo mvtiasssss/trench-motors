@@ -5,6 +5,7 @@ import Image from "next/image";
 
 import type { VehicleImage } from "@/types/vehicle";
 import { cn } from "@/lib/utils";
+import { BLUR_DATA_URL } from "@/lib/image";
 
 interface GalleryProps {
   images: VehicleImage[];
@@ -34,6 +35,8 @@ export function Gallery({ images, alt }: GalleryProps) {
           fill
           priority
           sizes="(max-width: 1024px) 100vw, 66vw"
+          placeholder="blur"
+          blurDataURL={BLUR_DATA_URL}
           className="object-cover"
         />
       </div>
@@ -60,6 +63,9 @@ export function Gallery({ images, alt }: GalleryProps) {
                 alt=""
                 fill
                 sizes="96px"
+                loading="lazy"
+                placeholder="blur"
+                blurDataURL={BLUR_DATA_URL}
                 className="object-cover"
               />
             </button>

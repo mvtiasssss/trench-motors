@@ -6,6 +6,7 @@ import type { VehicleWithImages } from "@/types/vehicle";
 import { cn } from "@/lib/utils";
 import { formatCLP, formatKm } from "@/lib/format";
 import { cuotaDesde } from "@/lib/finance";
+import { BLUR_DATA_URL } from "@/lib/image";
 import { Badge, type BadgeProps } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 
@@ -58,6 +59,8 @@ export function VehicleCard({ vehicle, className }: VehicleCardProps) {
             alt={`${marca} ${modelo} ${anio}`}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            placeholder="blur"
+            blurDataURL={BLUR_DATA_URL}
             className={cn(
               "object-cover transition-transform duration-500 group-hover:scale-105",
               vendido && "opacity-60 grayscale"

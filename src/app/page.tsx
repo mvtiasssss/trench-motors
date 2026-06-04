@@ -9,6 +9,7 @@ import { SearchBar } from "@/components/SearchBar";
 import { HomeHero } from "@/components/HomeHero";
 import { Button } from "@/components/ui/button";
 import { getBrands, getFeaturedVehicles } from "@/lib/vehicles";
+import { BLUR_DATA_URL } from "@/lib/image";
 import type { Brand, VehicleWithImages } from "@/types/vehicle";
 
 const beneficios = [
@@ -193,6 +194,9 @@ export default async function Home() {
             alt=""
             fill
             sizes="100vw"
+            loading="lazy"
+            placeholder="blur"
+            blurDataURL={BLUR_DATA_URL}
             className="object-cover blur-sm"
             aria-hidden
           />

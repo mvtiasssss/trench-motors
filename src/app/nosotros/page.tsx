@@ -6,6 +6,7 @@ import { ShieldCheck, ArrowRight } from "lucide-react";
 import { Container } from "@/components/container";
 import { SectionHeading } from "@/components/section-heading";
 import { Button } from "@/components/ui/button";
+import { BLUR_DATA_URL } from "@/lib/image";
 
 export const metadata: Metadata = {
   title: "Nosotros | Trench Motors",
@@ -70,6 +71,8 @@ export default function NosotrosPage() {
                 alt="George Trench, fundador de Trench Motors"
                 fill
                 sizes="(max-width:1024px) 100vw, 50vw"
+                placeholder="blur"
+                blurDataURL={BLUR_DATA_URL}
                 className="object-cover"
               />
             </div>
@@ -125,6 +128,8 @@ export default function NosotrosPage() {
                     alt={persona.nombre}
                     fill
                     sizes="96px"
+                    placeholder="blur"
+                    blurDataURL={BLUR_DATA_URL}
                     className="object-cover"
                   />
                 </div>

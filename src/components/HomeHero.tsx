@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Volume2, VolumeX, RotateCcw } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { BLUR_DATA_URL } from "@/lib/image";
 import { Container } from "@/components/container";
 import { Button } from "@/components/ui/button";
 import { WhatsAppButton } from "@/components/whatsapp-button";
@@ -197,6 +198,8 @@ export function HomeHero() {
             fill
             priority
             sizes="100vw"
+            placeholder="blur"
+            blurDataURL={BLUR_DATA_URL}
             className="object-cover"
           />
         </div>
