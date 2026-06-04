@@ -70,7 +70,7 @@ create table if not exists public.leads (
   email      text,
   mensaje    text,
   vehicle_id uuid references public.vehicles(id) on delete set null,  -- nullable
-  origen     text not null check (origen in ('contacto','cotizacion','precalificacion')),
+  origen     text not null check (origen in ('contacto','cotizacion','precalificacion','agendamiento')),
   created_at timestamptz not null default now()
 );
 

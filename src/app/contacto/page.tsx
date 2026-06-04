@@ -4,6 +4,7 @@ import { Phone, MessageCircle, Mail, MapPin, Clock } from "lucide-react";
 import { Container } from "@/components/container";
 import { SectionHeading } from "@/components/section-heading";
 import { QuoteForm } from "@/components/vehicle/QuoteForm";
+import { AgendarVisita } from "@/components/vehicle/AgendarVisita";
 import { WhatsAppButton } from "@/components/whatsapp-button";
 import { siteConfig } from "@/lib/site";
 
@@ -116,6 +117,22 @@ export default function ContactoPage() {
                 Envíanos un mensaje
               </h2>
               <QuoteForm origen="contacto" submitLabel="Enviar mensaje" />
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      {/* Agendar visita */}
+      <section className="border-t border-border bg-card py-12 sm:py-16">
+        <Container>
+          <div className="mx-auto max-w-2xl">
+            <SectionHeading
+              eyebrow="Visítanos"
+              title="Agenda una visita"
+              subtitle="Elige el día y la franja que más te acomoden y te confirmamos."
+            />
+            <div className="mt-6 rounded-lg border border-border bg-background p-6 sm:p-8">
+              <AgendarVisita />
             </div>
           </div>
         </Container>

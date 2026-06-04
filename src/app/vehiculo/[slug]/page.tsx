@@ -23,6 +23,7 @@ import { WhatsAppButton } from "@/components/whatsapp-button";
 import { SimuladorCuota } from "@/components/SimuladorCuota";
 import { Gallery } from "@/components/vehicle/Gallery";
 import { QuoteForm } from "@/components/vehicle/QuoteForm";
+import { AgendarVisita } from "@/components/vehicle/AgendarVisita";
 import { ShareButton } from "@/components/vehicle/ShareButton";
 import { RegisterView } from "@/components/vehicle/RegisterView";
 import { TrackRecentView } from "@/components/recent/TrackRecentView";
@@ -319,6 +320,9 @@ export default async function VehiculoPage({
             <Button asChild size="lg">
               <a href="#cotizar">Cotizar</a>
             </Button>
+            <Button asChild size="lg" variant="outline">
+              <a href="#agendar">Agendar visita</a>
+            </Button>
             <WhatsAppButton
               variant="whatsapp"
               size="lg"
@@ -350,6 +354,24 @@ export default async function VehiculoPage({
             <QuoteForm
               vehicleId={id}
               defaultMensaje={`Hola, me interesa el ${marca} ${modelo} ${anio}. ¿Sigue disponible?`}
+            />
+          </div>
+        </div>
+      </section>
+
+      {/* Agendar visita / test drive */}
+      <section id="agendar" className="mt-12 scroll-mt-28">
+        <div className="max-w-2xl rounded-lg border border-border bg-card p-6 sm:p-8">
+          <h2 className="font-display text-2xl font-bold uppercase tracking-tight text-foreground">
+            Agenda una visita
+          </h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Ven a verlo o pruébalo. Elige el día y la franja que te acomoden.
+          </p>
+          <div className="mt-6">
+            <AgendarVisita
+              vehicleId={id}
+              vehicleLabel={`${marca} ${modelo} ${anio}`}
             />
           </div>
         </div>

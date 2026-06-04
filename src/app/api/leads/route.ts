@@ -12,7 +12,12 @@ const leadSchema = z.object({
   email: z.string().email(),
   mensaje: z.string().min(10),
   vehicle_id: z.string().uuid().optional(),
-  origen: z.enum(["cotizacion", "precalificacion", "contacto"]),
+  origen: z.enum([
+    "cotizacion",
+    "precalificacion",
+    "contacto",
+    "agendamiento",
+  ]),
 });
 
 function escapeHtml(value: string): string {

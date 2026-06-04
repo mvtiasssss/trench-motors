@@ -20,7 +20,11 @@ export type FuelType = "bencina" | "diesel" | "hibrido" | "electrico";
 export type VehicleCondition = "nuevo" | "usado";
 
 /** Origen de un lead (formulario que lo generó). */
-export type LeadOrigen = "contacto" | "cotizacion" | "precalificacion";
+export type LeadOrigen =
+  | "contacto"
+  | "cotizacion"
+  | "precalificacion"
+  | "agendamiento";
 
 /** Vehículo del catálogo (tabla `vehicles`). */
 export interface Vehicle {
