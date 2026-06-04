@@ -80,19 +80,6 @@ export function HomeHero() {
     }
   }
 
-  function playMotor() {
-    const audio = audioRef.current;
-    if (!audio) return;
-    try {
-      audio.muted = muted;
-      audio.currentTime = 0;
-      const p = audio.play();
-      if (p) p.catch(() => {});
-    } catch {
-      /* el audio puede fallar; la animación corre igual */
-    }
-  }
-
   /** Encadena ignición → aceleración → asentar (con tiempos por defecto). */
   function runSequence() {
     clearTimers();
@@ -116,13 +103,58 @@ export function HomeHero() {
     );
   }
 
+  /**
+   * Reproduce el motor y arranca la animación SINCRONIZADA con el inicio real
+   * del audio (evento "playing"), evitando el desfase por la latencia de
+   * decodificación. Si el audio no puede sonar, un fallback dispara la animación
+   * igual a los 500 ms.
+   */
+  function startEngine(fadeOutOverlay: boolean) {
+    const audio = audioRef.current;
+
+    let started = false;
+    const begin = () => {
+      if (started) return;
+      started = true;
+      runSequence();
+      if (fadeOutOverlay) {
+        setIntroFading(true);
+        timers.current.push(
+          setTimeout(
+            () => setIntroVisible(false),
+            reducedRef.current ? 400 : 850
+          )
+        );
+      }
+    };
+
+    if (!audio) {
+      begin();
+      return;
+    }
+
+    try {
+      audio.muted = muted;
+      audio.currentTime = 0;
+    } catch {
+      /* ignore */
+    }
+
+    // El audio manda: la animación parte cuando el sonido realmente empieza.
+    audio.addEventListener("playing", begin, { once: true });
+
+    const p = audio.play();
+    if (p && typeof p.catch === "function") {
+      p.catch(() => begin()); // audio bloqueado/no soportado → animación igual
+    }
+
+    // Salvaguarda por si el evento "playing" nunca llega.
+    timers.current.push(setTimeout(begin, 500));
+  }
+
   function handleIgnite() {
     markSeen();
-    playMotor();
-    setIntroFading(true);
-    runSequence();
-    const delay = reducedRef.current ? 400 : 850;
-    timers.current.push(setTimeout(() => setIntroVisible(false), delay));
+    startEngine(true);
   }
 
   function handleSkip() {
@@ -134,8 +166,7 @@ export function HomeHero() {
   }
 
   function handleReplay() {
-    playMotor();
-    runSequence();
+    startEngine(false);
   }
 
   function toggleMute() {
@@ -148,7 +179,7 @@ export function HomeHero() {
 
   return (
     <>
-      <audio ref={audioRef} src="/audio/motor-startup.m4a" preload="auto">
+      <audio ref={audioRef} src="/audio/motor-startup5.m4a" preload="auto">
         <track kind="captions" />
       </audio>
 
