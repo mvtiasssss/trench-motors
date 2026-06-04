@@ -42,6 +42,10 @@ export interface Vehicle {
   puertas: number | null;
   condicion: VehicleCondition;
   descripcion: string | null;
+  /** URL de video opcional (YouTube/Vimeo o MP4) para la galería. */
+  video_url: string | null;
+  /** Visitas reales acumuladas a la ficha (ver RPC increment_vehicle_view). */
+  vistas: number;
   destacado: boolean;
   vendido: boolean;
   created_at: string;
@@ -81,4 +85,17 @@ export interface Lead {
 /** Vehículo junto con sus imágenes (consulta con join). */
 export interface VehicleWithImages extends Vehicle {
   imagenes: VehicleImage[];
+}
+
+/**
+ * Alerta / búsqueda guardada (tabla `alertas_busqueda`). El usuario deja su
+ * email y los filtros activos; cuando llegue un auto que calce se le avisará
+ * (envío automático pendiente, ver Módulo H).
+ */
+export interface AlertaBusqueda {
+  id: string;
+  email: string;
+  /** Filtros del catálogo serializados (marca, tipo, precio_max, cuota_max…). */
+  filtros: Record<string, unknown>;
+  created_at: string;
 }

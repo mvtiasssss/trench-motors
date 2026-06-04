@@ -26,11 +26,17 @@ create table if not exists public.vehicles (
   puertas     int,
   condicion   text not null check (condicion in ('nuevo','usado')),
   descripcion text,
+  video_url   text,                                  -- YouTube/Vimeo o MP4 (galería)
+  vistas      bigint not null default 0,             -- visitas reales a la ficha
   destacado   boolean not null default false,
   vendido     boolean not null default false,
   created_at  timestamptz not null default now(),
   updated_at  timestamptz not null default now()
 );
+
+-- Por si la tabla ya existía antes de añadir estas columnas (idempotente).
+alter table public.vehicles add column if not exists video_url text;
+alter table public.vehicles add column if not exists vistas bigint not null default 0;
 
 -- ---------------------------------------------------------------------
 -- Tabla: vehicle_images
@@ -69,6 +75,16 @@ create table if not exists public.leads (
 );
 
 -- ---------------------------------------------------------------------
+-- Tabla: alertas_busqueda (búsquedas guardadas / alertas)
+-- ---------------------------------------------------------------------
+create table if not exists public.alertas_busqueda (
+  id         uuid primary key default gen_random_uuid(),
+  email      text not null,
+  filtros    jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now()
+);
+
+-- ---------------------------------------------------------------------
 -- Índices (campos que se filtran / ordenan)
 -- ---------------------------------------------------------------------
 create index if not exists idx_vehicles_marca     on public.vehicles (marca);
@@ -81,6 +97,8 @@ create index if not exists idx_vehicles_vendido    on public.vehicles (vendido);
 -- El índice único de slug lo provee la restricción UNIQUE de la columna.
 create index if not exists idx_vehicle_images_vehicle_id on public.vehicle_images (vehicle_id);
 create index if not exists idx_leads_vehicle_id          on public.leads (vehicle_id);
+create index if not exists idx_alertas_busqueda_email     on public.alertas_busqueda (email);
+create index if not exists idx_alertas_busqueda_created_at on public.alertas_busqueda (created_at);
 
 -- ---------------------------------------------------------------------
 -- Trigger: mantener updated_at en cada UPDATE de vehicles
@@ -104,10 +122,11 @@ create trigger trg_vehicles_updated_at
 -- =====================================================================
 -- Row Level Security (RLS)
 -- =====================================================================
-alter table public.vehicles       enable row level security;
-alter table public.vehicle_images enable row level security;
-alter table public.brands         enable row level security;
-alter table public.leads          enable row level security;
+alter table public.vehicles         enable row level security;
+alter table public.vehicle_images   enable row level security;
+alter table public.brands           enable row level security;
+alter table public.leads            enable row level security;
+alter table public.alertas_busqueda enable row level security;
 
 -- ---- vehicles: SELECT público; escritura solo authenticated --------
 drop policy if exists "vehicles_select_public" on public.vehicles;
@@ -170,3 +189,27 @@ create policy "leads_insert_public"
 drop policy if exists "leads_select_auth" on public.leads;
 create policy "leads_select_auth"
   on public.leads for select to authenticated using (true);
+
+-- ---- alertas_busqueda: INSERT público; SELECT solo authenticated ----
+drop policy if exists "alertas_busqueda_insert_public" on public.alertas_busqueda;
+create policy "alertas_busqueda_insert_public"
+  on public.alertas_busqueda for insert to anon, authenticated with check (true);
+
+drop policy if exists "alertas_busqueda_select_auth" on public.alertas_busqueda;
+create policy "alertas_busqueda_select_auth"
+  on public.alertas_busqueda for select to authenticated using (true);
+
+-- =====================================================================
+-- RPC: increment_vehicle_view(p_slug) — suma 1 a "vistas" (SECURITY DEFINER)
+-- =====================================================================
+create or replace function public.increment_vehicle_view(p_slug text)
+returns void
+language sql
+security definer
+set search_path = public
+as $$
+  update public.vehicles set vistas = vistas + 1 where slug = p_slug;
+$$;
+
+revoke all on function public.increment_vehicle_view(text) from public;
+grant execute on function public.increment_vehicle_view(text) to anon, authenticated;
