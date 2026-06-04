@@ -23,6 +23,7 @@ import { SimuladorCuota } from "@/components/SimuladorCuota";
 import { Gallery } from "@/components/vehicle/Gallery";
 import { QuoteForm } from "@/components/vehicle/QuoteForm";
 import { ShareButton } from "@/components/vehicle/ShareButton";
+import { Garantias } from "@/components/garantias";
 import { getSimilarVehicles, getVehicleBySlug } from "@/lib/vehicles";
 import { formatCLP, formatKm } from "@/lib/format";
 import { TIPOS } from "@/lib/vehicle-options";
@@ -276,6 +277,14 @@ export default async function VehiculoPage({
               </p>
             </section>
           ) : null}
+
+          {/* Nuestro compromiso (garantías) */}
+          <section>
+            <h2 className="font-display text-xl font-bold uppercase tracking-tight text-foreground">
+              Nuestro compromiso
+            </h2>
+            <Garantias variant="compact" className="mt-4" />
+          </section>
         </div>
 
         {/* Caja de precio (sticky) */}

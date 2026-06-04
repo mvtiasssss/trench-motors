@@ -1,39 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ShieldCheck, Banknote, Wrench, Handshake, Star } from "lucide-react";
+import { Star } from "lucide-react";
 
 import { Container } from "@/components/container";
 import { SectionHeading } from "@/components/section-heading";
 import { VehicleCard } from "@/components/vehicle-card";
 import { SearchBar } from "@/components/SearchBar";
 import { HomeHero } from "@/components/HomeHero";
+import { Garantias } from "@/components/garantias";
 import { Button } from "@/components/ui/button";
 import { getBrands, getFeaturedVehicles } from "@/lib/vehicles";
 import { BLUR_DATA_URL } from "@/lib/image";
 import type { Brand, VehicleWithImages } from "@/types/vehicle";
-
-const beneficios = [
-  {
-    icon: ShieldCheck,
-    title: "Garantía en cada vehículo",
-    desc: "Todos nuestros autos pasan por control de calidad y cuentan con respaldo.",
-  },
-  {
-    icon: Banknote,
-    title: "Financiamiento a tu medida",
-    desc: "Te ayudamos a encontrar el crédito que mejor se ajusta a tu bolsillo.",
-  },
-  {
-    icon: Wrench,
-    title: "Revisión técnica al día",
-    desc: "Entregamos cada vehículo revisado y con su documentación en regla.",
-  },
-  {
-    icon: Handshake,
-    title: "Atención cercana y sin presión",
-    desc: "Te asesoramos con transparencia para que compres con tranquilidad.",
-  },
-];
 
 const marcas = ["Toyota", "Hyundai", "Kia", "Chevrolet", "Nissan", "Mazda"];
 
@@ -116,22 +94,7 @@ export default async function Home() {
             title="¿Por qué Trench Motors?"
             align="center"
           />
-          <div className="mt-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {beneficios.map((b) => (
-              <div
-                key={b.title}
-                className="flex flex-col items-center gap-4 rounded-lg border border-border bg-background p-6 text-center"
-              >
-                <span className="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
-                  <b.icon className="size-6" aria-hidden />
-                </span>
-                <h3 className="font-display text-lg font-semibold text-foreground">
-                  {b.title}
-                </h3>
-                <p className="text-sm text-muted-foreground">{b.desc}</p>
-              </div>
-            ))}
-          </div>
+          <Garantias className="mt-10" />
         </Container>
       </section>
 
