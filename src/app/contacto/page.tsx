@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Phone, MessageCircle, Mail, MapPin, Clock } from "lucide-react";
+import { Phone, MessageCircle, Mail } from "lucide-react";
 
 import { Container } from "@/components/container";
 import { SectionHeading } from "@/components/section-heading";
@@ -11,12 +11,8 @@ import { siteConfig } from "@/lib/site";
 export const metadata: Metadata = {
   title: "Contacto | Trench Motors",
   description:
-    "Conversemos. Escríbenos o visítanos: teléfono, WhatsApp, correo y ubicación de Trench Motors.",
+    "Conversemos. Escríbenos por teléfono, WhatsApp o correo de Trench Motors.",
 };
-
-const mapaSrc = `https://www.google.com/maps?q=${encodeURIComponent(
-  siteConfig.direccion
-)}&output=embed`;
 
 export default function ContactoPage() {
   return (
@@ -84,30 +80,6 @@ export default function ContactoPage() {
                     </a>
                   </div>
                 </li>
-                <li className="flex items-start gap-3">
-                  <MapPin className="mt-0.5 size-5 shrink-0 text-primary" aria-hidden />
-                  <div>
-                    <p className="text-sm text-muted-foreground">Dirección</p>
-                    <p className="font-medium text-foreground">
-                      {siteConfig.direccion}
-                    </p>
-                  </div>
-                </li>
-                <li className="flex items-start gap-3">
-                  <Clock className="mt-0.5 size-5 shrink-0 text-primary" aria-hidden />
-                  <div>
-                    <p className="text-sm text-muted-foreground">
-                      Horarios de atención
-                    </p>
-                    <ul className="font-medium text-foreground">
-                      {siteConfig.horarios.map((h) => (
-                        <li key={h.dias}>
-                          {h.dias}: {h.horas}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </li>
               </ul>
             </div>
 
@@ -134,21 +106,6 @@ export default function ContactoPage() {
             <div className="mt-6 rounded-lg border border-border bg-background p-6 sm:p-8">
               <AgendarVisita />
             </div>
-          </div>
-        </Container>
-      </section>
-
-      {/* Mapa */}
-      <section className="pb-16">
-        <Container>
-          <div className="overflow-hidden rounded-lg border border-border">
-            <iframe
-              title="Ubicación de Trench Motors"
-              src={mapaSrc}
-              className="h-[360px] w-full"
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            />
           </div>
         </Container>
       </section>

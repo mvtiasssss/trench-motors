@@ -3,7 +3,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Phone, MessageCircle, Mail, Clock } from "lucide-react";
+import { Phone, MessageCircle, Mail } from "lucide-react";
 
 import { Container } from "@/components/container";
 import { Logo } from "@/components/logo";
@@ -57,7 +57,7 @@ export function Footer() {
   return (
     <footer className="border-t border-border bg-card text-card-foreground">
       <Container className="py-12 sm:py-16">
-        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3">
           {/* Marca + navegación */}
           <div className="flex flex-col gap-4">
             <Logo className="h-28" />
@@ -112,24 +112,6 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Horarios */}
-          <div className="flex flex-col gap-4">
-            <h3 className="text-sm font-semibold uppercase tracking-widest text-foreground">
-              Horarios
-            </h3>
-            <ul className="flex flex-col gap-3 text-sm text-muted-foreground">
-              {siteConfig.horarios.map((h) => (
-                <li key={h.dias} className="flex items-start gap-2">
-                  <Clock className="mt-0.5 size-4 shrink-0" aria-hidden />
-                  <span>
-                    <span className="block text-foreground">{h.dias}</span>
-                    {h.horas}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
           {/* Redes sociales */}
           <div className="flex flex-col gap-4">
             <h3 className="text-sm font-semibold uppercase tracking-widest text-foreground">
@@ -155,7 +137,6 @@ export function Footer() {
                 <FacebookIcon className="size-5" />
               </a>
             </div>
-            <p className="text-sm text-muted-foreground">{siteConfig.direccion}</p>
           </div>
         </div>
       </Container>

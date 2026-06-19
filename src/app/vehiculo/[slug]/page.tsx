@@ -73,7 +73,6 @@ function buildJsonLd(vehicle: VehicleWithImages) {
     email: siteConfig.email,
     address: {
       "@type": "PostalAddress",
-      streetAddress: siteConfig.direccion,
       addressCountry: "CL",
     },
   };

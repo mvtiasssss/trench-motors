@@ -1,6 +1,5 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Star } from "lucide-react";
 
 import { Container } from "@/components/container";
 import { SectionHeading } from "@/components/section-heading";
@@ -15,24 +14,6 @@ import { BLUR_DATA_URL } from "@/lib/image";
 import type { Brand, VehicleWithImages } from "@/types/vehicle";
 
 const marcas = ["Toyota", "Hyundai", "Kia", "Chevrolet", "Nissan", "Mazda"];
-
-const testimonios = [
-  {
-    nombre: "Camila Rojas",
-    comentario:
-      "Compré mi primer auto en Trench Motors y la atención fue impecable. Me explicaron todo sin apuro y el financiamiento quedó a mi medida.",
-  },
-  {
-    nombre: "Felipe Soto",
-    comentario:
-      "Vehículo tal cual lo publicado, revisado y con papeles al día. Proceso rápido y transparente. Recomendado 100%.",
-  },
-  {
-    nombre: "Daniela Muñoz",
-    comentario:
-      "Excelente experiencia. Recibieron mi auto en parte de pago y me fui con una SUV impecable el mismo día.",
-  },
-];
 
 export default async function Home() {
   let destacados: VehicleWithImages[] = [];
@@ -113,37 +94,6 @@ export default async function Home() {
               >
                 {m}
               </span>
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      {/* ======================== TESTIMONIOS ========================== */}
-      <section className="border-t border-border bg-card py-16 sm:py-24">
-        <Container>
-          <SectionHeading
-            eyebrow="Testimonios"
-            title="Lo que dicen nuestros clientes"
-            align="center"
-          />
-          <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-3">
-            {testimonios.map((t) => (
-              <figure
-                key={t.nombre}
-                className="flex flex-col gap-4 rounded-lg border border-border bg-background p-6"
-              >
-                <div className="flex gap-1 text-amber-400" aria-label="5 de 5 estrellas">
-                  {Array.from({ length: 5 }).map((_, i) => (
-                    <Star key={i} className="size-4 fill-current" aria-hidden />
-                  ))}
-                </div>
-                <blockquote className="text-sm leading-relaxed text-muted-foreground">
-                  &ldquo;{t.comentario}&rdquo;
-                </blockquote>
-                <figcaption className="mt-auto font-display text-sm font-semibold text-foreground">
-                  {t.nombre}
-                </figcaption>
-              </figure>
             ))}
           </div>
         </Container>
