@@ -184,14 +184,14 @@ export function AdminVehicleTable({
               return (
                 <tr key={v.id} className="bg-background">
                   <td className="p-3">
-                    <div className="relative h-10 w-16 overflow-hidden rounded bg-muted">
+                    <div className="relative h-10 w-16 overflow-hidden rounded bg-[#0B0B0D]">
                       {foto ? (
                         <Image
                           src={foto}
                           alt={`${v.marca} ${v.modelo}`}
                           fill
                           sizes="64px"
-                          className="object-cover"
+                          className="object-contain"
                         />
                       ) : null}
                     </div>

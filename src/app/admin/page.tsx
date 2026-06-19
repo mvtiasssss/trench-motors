@@ -211,14 +211,14 @@ export default async function AdminDashboardPage() {
                     href={`/admin/vehiculos/${v.id}/editar`}
                     className="flex items-center gap-3 py-2.5 transition-colors hover:text-primary"
                   >
-                    <div className="relative h-10 w-16 shrink-0 overflow-hidden rounded bg-muted">
+                    <div className="relative h-10 w-16 shrink-0 overflow-hidden rounded bg-[#0B0B0D]">
                       {v.foto ? (
                         <Image
                           src={v.foto}
                           alt={`${v.marca} ${v.modelo}`}
                           fill
                           sizes="64px"
-                          className="object-cover"
+                          className="object-contain"
                         />
                       ) : null}
                     </div>

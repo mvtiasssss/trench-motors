@@ -400,14 +400,14 @@ export function VehicleForm({ vehicle }: VehicleFormProps) {
                   img.es_principal ? "border-primary" : "border-border"
                 )}
               >
-                <div className="relative aspect-video w-full">
+                <div className="relative aspect-video w-full bg-[#0B0B0D]">
                   {img.status === "ready" && img.url ? (
                     <Image
                       src={img.url}
                       alt=""
                       fill
                       sizes="200px"
-                      className="object-cover"
+                      className="object-contain"
                     />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center text-xs text-muted-foreground">

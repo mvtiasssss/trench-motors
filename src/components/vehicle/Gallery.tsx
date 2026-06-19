@@ -68,7 +68,7 @@ export function Gallery({ images, alt, videoUrl }: GalleryProps) {
   return (
     <div className="flex flex-col gap-3">
       {/* Visor principal */}
-      <div className="relative aspect-video w-full overflow-hidden rounded-lg border border-border bg-muted">
+      <div className="relative aspect-video w-full overflow-hidden rounded-lg border border-border bg-[#0B0B0D]">
         {mode === "video" && video ? (
           video.kind === "file" ? (
             <video
@@ -110,7 +110,7 @@ export function Gallery({ images, alt, videoUrl }: GalleryProps) {
                   sizes="(max-width: 1024px) 100vw, 66vw"
                   placeholder="blur"
                   blurDataURL={BLUR_DATA_URL}
-                  className="object-cover"
+                  className="object-contain"
                 />
               ) : (
                 <span className="absolute inset-0 bg-black" />
@@ -130,7 +130,7 @@ export function Gallery({ images, alt, videoUrl }: GalleryProps) {
             sizes="(max-width: 1024px) 100vw, 66vw"
             placeholder="blur"
             blurDataURL={BLUR_DATA_URL}
-            className="object-cover"
+            className="object-contain"
           />
         ) : null}
       </div>
@@ -145,7 +145,7 @@ export function Gallery({ images, alt, videoUrl }: GalleryProps) {
               aria-label="Ver video"
               aria-current={mode === "video"}
               className={cn(
-                "relative aspect-video h-16 w-24 shrink-0 overflow-hidden rounded-md border transition",
+                "relative aspect-video h-16 w-24 shrink-0 overflow-hidden rounded-md border bg-[#0B0B0D] transition",
                 mode === "video"
                   ? "border-primary"
                   : "border-border opacity-70 hover:opacity-100"
@@ -157,7 +157,7 @@ export function Gallery({ images, alt, videoUrl }: GalleryProps) {
                   alt=""
                   fill
                   sizes="96px"
-                  className="object-cover"
+                  className="object-contain"
                 />
               ) : (
                 <span className="absolute inset-0 bg-black" />
@@ -179,7 +179,7 @@ export function Gallery({ images, alt, videoUrl }: GalleryProps) {
               aria-label={`Ver imagen ${i + 1}`}
               aria-current={mode === "image" && i === selected}
               className={cn(
-                "relative aspect-video h-16 w-24 shrink-0 overflow-hidden rounded-md border transition",
+                "relative aspect-video h-16 w-24 shrink-0 overflow-hidden rounded-md border bg-[#0B0B0D] transition",
                 mode === "image" && i === selected
                   ? "border-primary"
                   : "border-border opacity-70 hover:opacity-100"
@@ -193,7 +193,7 @@ export function Gallery({ images, alt, videoUrl }: GalleryProps) {
                 loading="lazy"
                 placeholder="blur"
                 blurDataURL={BLUR_DATA_URL}
-                className="object-cover"
+                className="object-contain"
               />
             </button>
           ))}

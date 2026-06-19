@@ -87,7 +87,7 @@ export function CompareBar() {
           <ul className="flex flex-1 items-center gap-3 overflow-x-auto">
             {items.map((it) => (
               <li key={it.slug} className="relative shrink-0">
-                <div className="relative h-12 w-16 overflow-hidden rounded border border-border bg-muted">
+                <div className="relative h-12 w-16 overflow-hidden rounded border border-border bg-[#0B0B0D]">
                   {it.foto ? (
                     <Image
                       src={it.foto}
@@ -96,7 +96,7 @@ export function CompareBar() {
                       sizes="64px"
                       placeholder="blur"
                       blurDataURL={BLUR_DATA_URL}
-                      className="object-cover"
+                      className="object-contain"
                     />
                   ) : null}
                 </div>
@@ -155,7 +155,7 @@ export function CompareBar() {
                       onClick={() => setOpen(false)}
                       className="group block"
                     >
-                      <div className="relative aspect-video w-full overflow-hidden rounded-md border border-border bg-muted">
+                      <div className="relative aspect-video w-full overflow-hidden rounded-md border border-border bg-[#0B0B0D]">
                         {it.foto ? (
                           <Image
                             src={it.foto}
@@ -164,7 +164,7 @@ export function CompareBar() {
                             sizes="(max-width: 640px) 45vw, 200px"
                             placeholder="blur"
                             blurDataURL={BLUR_DATA_URL}
-                            className="object-cover"
+                            className="object-contain"
                           />
                         ) : null}
                       </div>
