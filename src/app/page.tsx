@@ -6,14 +6,11 @@ import { SectionHeading } from "@/components/section-heading";
 import { VehicleCard } from "@/components/vehicle-card";
 import { SearchBar } from "@/components/SearchBar";
 import { HomeHero } from "@/components/HomeHero";
-import { Garantias } from "@/components/garantias";
 import { RecentlyViewed } from "@/components/recent/RecentlyViewed";
 import { Button } from "@/components/ui/button";
 import { getBrands, getFeaturedVehicles } from "@/lib/vehicles";
 import { BLUR_DATA_URL } from "@/lib/image";
 import type { Brand, VehicleWithImages } from "@/types/vehicle";
-
-const marcas = ["Toyota", "Hyundai", "Kia", "Chevrolet", "Nissan", "Mazda"];
 
 export default async function Home() {
   let destacados: VehicleWithImages[] = [];
@@ -64,37 +61,6 @@ export default async function Home() {
             <Button asChild variant="outline" size="lg">
               <Link href="/catalogo">Ver todo el catálogo</Link>
             </Button>
-          </div>
-        </Container>
-      </section>
-
-      {/* ==================== ¿POR QUÉ TRENCH? ========================= */}
-      <section className="border-y border-border bg-card py-16 sm:py-24">
-        <Container>
-          <SectionHeading
-            eyebrow="Por qué elegirnos"
-            title="¿Por qué Trench Motors?"
-            align="center"
-          />
-          <Garantias className="mt-10" />
-        </Container>
-      </section>
-
-      {/* ========================== MARCAS ============================= */}
-      <section className="py-12 sm:py-16">
-        <Container>
-          <p className="text-center text-sm uppercase tracking-widest text-muted-foreground">
-            Trabajamos con las mejores marcas
-          </p>
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-10 gap-y-6">
-            {marcas.map((m) => (
-              <span
-                key={m}
-                className="font-display text-2xl font-bold uppercase tracking-wide text-muted-foreground/60 transition-colors duration-300 hover:text-silver sm:text-3xl"
-              >
-                {m}
-              </span>
-            ))}
           </div>
         </Container>
       </section>

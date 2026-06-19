@@ -27,7 +27,6 @@ import { AgendarVisita } from "@/components/vehicle/AgendarVisita";
 import { ShareButton } from "@/components/vehicle/ShareButton";
 import { RegisterView } from "@/components/vehicle/RegisterView";
 import { TrackRecentView } from "@/components/recent/TrackRecentView";
-import { Garantias } from "@/components/garantias";
 import { toMiniVehicle } from "@/lib/vehicle-mini";
 import { getSimilarVehicles, getVehicleBySlug } from "@/lib/vehicles";
 import { formatCLP, formatKm } from "@/lib/format";
@@ -292,13 +291,6 @@ export default async function VehiculoPage({
             </section>
           ) : null}
 
-          {/* Nuestro compromiso (garantías) */}
-          <section>
-            <h2 className="font-display text-xl font-bold uppercase tracking-tight text-foreground">
-              Nuestro compromiso
-            </h2>
-            <Garantias variant="compact" className="mt-4" />
-          </section>
         </div>
 
         {/* Caja de precio (sticky) */}

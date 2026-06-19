@@ -12,8 +12,8 @@ export const siteConfig = {
   whatsapp: "56956698671",
   email: "george@trenchmotors.cl",
   redes: {
-    instagram: "https://instagram.com/trenchmotors",
-    facebook: "https://facebook.com/trenchmotors",
+    instagram: "https://instagram.com/automotoratrenchmotors",
+    facebook: "https://www.facebook.com/profile.php?id=61590865915183",
   },
 } as const;
 
