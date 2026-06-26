@@ -52,7 +52,7 @@ export function VehicleCard({ vehicle, className }: VehicleCardProps) {
         className
       )}
     >
-      {/* Imagen 16:9 — contain para no recortar la foto del vehículo */}
+      {/* Imagen 16:9 — cover para que la foto llene la tarjeta */}
       <div className="relative aspect-video w-full overflow-hidden bg-[#0B0B0D]">
         {foto ? (
           <Image
@@ -63,7 +63,7 @@ export function VehicleCard({ vehicle, className }: VehicleCardProps) {
             placeholder="blur"
             blurDataURL={BLUR_DATA_URL}
             className={cn(
-              "object-contain transition-transform duration-500 group-hover:scale-105",
+              "object-cover transition-transform duration-500 group-hover:scale-105",
               vendido && "opacity-60 grayscale"
             )}
           />

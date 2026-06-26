@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import Image from "next/image";
-import { Play } from "lucide-react";
+import { ChevronLeft, ChevronRight, Play, X } from "lucide-react";
 
 import type { VehicleImage } from "@/types/vehicle";
 import { cn } from "@/lib/utils";
@@ -36,6 +36,36 @@ function parseVideo(url: string): VideoInfo | null {
   return null;
 }
 
+/** Flecha de navegación: visible pero sutil (fondo semitransparente). */
+function NavArrow({
+  direction,
+  onClick,
+  className,
+}: {
+  direction: "prev" | "next";
+  onClick: () => void;
+  className?: string;
+}) {
+  const Icon = direction === "prev" ? ChevronLeft : ChevronRight;
+  return (
+    <button
+      type="button"
+      onClick={(e) => {
+        e.stopPropagation();
+        onClick();
+      }}
+      aria-label={direction === "prev" ? "Imagen anterior" : "Imagen siguiente"}
+      className={cn(
+        "absolute top-1/2 z-10 flex size-10 -translate-y-1/2 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm transition-colors hover:bg-black/70 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70",
+        direction === "prev" ? "left-3" : "right-3",
+        className
+      )}
+    >
+      <Icon className="size-6" aria-hidden />
+    </button>
+  );
+}
+
 export function Gallery({ images, alt, videoUrl }: GalleryProps) {
   const video = videoUrl ? parseVideo(videoUrl) : null;
 
@@ -45,6 +75,51 @@ export function Gallery({ images, alt, videoUrl }: GalleryProps) {
   );
   const [selected, setSelected] = React.useState(0);
   const [videoActivado, setVideoActivado] = React.useState(false);
+  const [lightboxOpen, setLightboxOpen] = React.useState(false);
+
+  const hasMultiple = images.length > 1;
+
+  const goPrev = React.useCallback(() => {
+    setMode("image");
+    setSelected((s) => (s - 1 + images.length) % images.length);
+  }, [images.length]);
+
+  const goNext = React.useCallback(() => {
+    setMode("image");
+    setSelected((s) => (s + 1) % images.length);
+  }, [images.length]);
+
+  // Bloquea el scroll del fondo y maneja el teclado mientras el lightbox está abierto.
+  React.useEffect(() => {
+    if (!lightboxOpen) return;
+
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setLightboxOpen(false);
+      else if (e.key === "ArrowLeft") goPrev();
+      else if (e.key === "ArrowRight") goNext();
+    };
+    window.addEventListener("keydown", onKey);
+
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener("keydown", onKey);
+    };
+  }, [lightboxOpen, goPrev, goNext]);
+
+  // Navegación con flechas del teclado sobre el visor en línea (cuando tiene foco).
+  const onViewerKeyDown = (e: React.KeyboardEvent) => {
+    if (!hasMultiple || mode !== "image") return;
+    if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      goPrev();
+    } else if (e.key === "ArrowRight") {
+      e.preventDefault();
+      goNext();
+    }
+  };
 
   // Sin fotos NI video: estado vacío (igual que antes).
   if (images.length === 0 && !video) {
@@ -68,7 +143,13 @@ export function Gallery({ images, alt, videoUrl }: GalleryProps) {
   return (
     <div className="flex flex-col gap-3">
       {/* Visor principal */}
-      <div className="relative aspect-video w-full overflow-hidden rounded-lg border border-border bg-[#0B0B0D]">
+      <div
+        role="group"
+        aria-label={`Galería de ${alt}`}
+        tabIndex={mode === "image" && hasMultiple ? 0 : -1}
+        onKeyDown={onViewerKeyDown}
+        className="relative aspect-video w-full overflow-hidden rounded-lg border border-border bg-[#0B0B0D] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+      >
         {mode === "video" && video ? (
           video.kind === "file" ? (
             <video
@@ -110,7 +191,7 @@ export function Gallery({ images, alt, videoUrl }: GalleryProps) {
                   sizes="(max-width: 1024px) 100vw, 66vw"
                   placeholder="blur"
                   blurDataURL={BLUR_DATA_URL}
-                  className="object-contain"
+                  className="object-cover"
                 />
               ) : (
                 <span className="absolute inset-0 bg-black" />
@@ -122,21 +203,39 @@ export function Gallery({ images, alt, videoUrl }: GalleryProps) {
             </button>
           )
         ) : current ? (
-          <Image
-            src={current.url}
-            alt={alt}
-            fill
-            priority
-            sizes="(max-width: 1024px) 100vw, 66vw"
-            placeholder="blur"
-            blurDataURL={BLUR_DATA_URL}
-            className="object-contain"
-          />
+          <>
+            <button
+              type="button"
+              onClick={() => setLightboxOpen(true)}
+              aria-label="Ampliar imagen"
+              className="group block h-full w-full cursor-zoom-in"
+            >
+              <Image
+                src={current.url}
+                alt={alt}
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 66vw"
+                placeholder="blur"
+                blurDataURL={BLUR_DATA_URL}
+                className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+              />
+            </button>
+            {hasMultiple ? (
+              <>
+                <NavArrow direction="prev" onClick={goPrev} />
+                <NavArrow direction="next" onClick={goNext} />
+                <span className="pointer-events-none absolute bottom-3 right-3 z-10 rounded-full bg-black/60 px-2.5 py-1 text-xs font-medium text-white backdrop-blur-sm">
+                  {selected + 1} / {images.length}
+                </span>
+              </>
+            ) : null}
+          </>
         ) : null}
       </div>
 
       {/* Miniaturas (video primero, si existe) */}
-      {video || images.length > 1 ? (
+      {video || hasMultiple ? (
         <div className="flex gap-3 overflow-x-auto pb-1">
           {video ? (
             <button
@@ -157,7 +256,7 @@ export function Gallery({ images, alt, videoUrl }: GalleryProps) {
                   alt=""
                   fill
                   sizes="96px"
-                  className="object-contain"
+                  className="object-cover"
                 />
               ) : (
                 <span className="absolute inset-0 bg-black" />
@@ -193,10 +292,60 @@ export function Gallery({ images, alt, videoUrl }: GalleryProps) {
                 loading="lazy"
                 placeholder="blur"
                 blurDataURL={BLUR_DATA_URL}
-                className="object-contain"
+                className="object-cover"
               />
             </button>
           ))}
+        </div>
+      ) : null}
+
+      {/* Lightbox / modal a pantalla completa */}
+      {lightboxOpen && current ? (
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label={`Foto ampliada de ${alt}`}
+          onClick={() => setLightboxOpen(false)}
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/95 p-4 sm:p-12"
+        >
+          {/* Botón cerrar */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              setLightboxOpen(false);
+            }}
+            aria-label="Cerrar"
+            className="absolute right-4 top-4 z-10 flex size-11 items-center justify-center rounded-full bg-white/10 text-white backdrop-blur-sm transition-colors hover:bg-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+          >
+            <X className="size-6" aria-hidden />
+          </button>
+
+          {/* Imagen centrada (clic sobre ella no cierra) */}
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative mx-auto h-full w-full max-w-6xl"
+          >
+            <Image
+              src={current.url}
+              alt={alt}
+              fill
+              sizes="100vw"
+              placeholder="blur"
+              blurDataURL={BLUR_DATA_URL}
+              className="select-none object-contain"
+            />
+          </div>
+
+          {hasMultiple ? (
+            <>
+              <NavArrow direction="prev" onClick={goPrev} className="left-4" />
+              <NavArrow direction="next" onClick={goNext} className="right-4" />
+              <span className="pointer-events-none absolute bottom-5 left-1/2 z-10 -translate-x-1/2 rounded-full bg-white/10 px-3 py-1 text-sm font-medium text-white backdrop-blur-sm">
+                {selected + 1} / {images.length}
+              </span>
+            </>
+          ) : null}
         </div>
       ) : null}
     </div>
