@@ -218,7 +218,7 @@ export function Gallery({ images, alt, videoUrl }: GalleryProps) {
                 sizes="(max-width: 1024px) 100vw, 66vw"
                 placeholder="blur"
                 blurDataURL={BLUR_DATA_URL}
-                className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
+                className="object-contain transition-transform duration-500 group-hover:scale-[1.02]"
               />
             </button>
             {hasMultiple ? (
